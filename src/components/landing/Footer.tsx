@@ -4,7 +4,13 @@ import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
 
 export const Footer: React.FC = () => {
-  const { t, dir } = useLanguage();
+  const { t, dir, language } = useLanguage();
+
+  const contactInfo = {
+    email: 'contact@wasfapro.com',
+    phone: language === 'ar' ? '+966 50 000 0000' : '+33 1 23 45 67 89',
+    location: language === 'ar' ? 'الرياض، السعودية' : language === 'fr' ? 'Paris, France' : 'Paris, France',
+  };
 
   return (
     <footer id="about" className="bg-card border-t border-border/30" dir={dir}>
@@ -19,13 +25,13 @@ export const Footer: React.FC = () => {
               <span className="text-xl font-bold text-foreground">WASFA PRO</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              الحل الاحترافي لإدارة الوصفات الطبية. آمن وسهل الاستخدام ومتوافق مع المعايير الصحية.
+              {t.footer.description}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-sm font-semibold text-foreground mb-4">المنتج</h4>
+            <h4 className="text-sm font-semibold text-foreground mb-4">{t.footer.product}</h4>
             <ul className="space-y-3">
               <li>
                 <a href="#features" className="text-sm text-muted-foreground hover:text-primary transition-colors">
@@ -39,7 +45,7 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  الأمان
+                  {t.footer.security}
                 </a>
               </li>
               <li>
@@ -52,26 +58,26 @@ export const Footer: React.FC = () => {
 
           {/* Resources */}
           <div>
-            <h4 className="text-sm font-semibold text-foreground mb-4">الموارد</h4>
+            <h4 className="text-sm font-semibold text-foreground mb-4">{t.footer.resources}</h4>
             <ul className="space-y-3">
               <li>
                 <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  التوثيق
+                  {t.footer.documentation}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  دليل البدء
+                  {t.footer.gettingStarted}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  الأسئلة الشائعة
+                  {t.footer.faq}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  الدعم الفني
+                  {t.footer.support}
                 </a>
               </li>
             </ul>
@@ -79,19 +85,19 @@ export const Footer: React.FC = () => {
 
           {/* Contact */}
           <div>
-            <h4 className="text-sm font-semibold text-foreground mb-4">تواصل معنا</h4>
+            <h4 className="text-sm font-semibold text-foreground mb-4">{t.footer.contact}</h4>
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Mail className="h-4 w-4 text-primary" />
-                contact@wasfapro.com
+                {contactInfo.email}
               </li>
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Phone className="h-4 w-4 text-primary" />
-                +966 50 000 0000
+                {contactInfo.phone}
               </li>
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4 text-primary" />
-                الرياض، السعودية
+                {contactInfo.location}
               </li>
             </ul>
           </div>
@@ -101,17 +107,17 @@ export const Footer: React.FC = () => {
         <div className="mt-12 pt-8 border-t border-border/30">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} WASFA PRO. جميع الحقوق محفوظة.
+              © {new Date().getFullYear()} WASFA PRO. {t.footer.allRightsReserved}
             </p>
             <div className="flex items-center gap-6">
               <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                الشروط والأحكام
+                {t.footer.legalNotice}
               </a>
               <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                سياسة الخصوصية
+                {t.footer.privacyPolicy}
               </a>
               <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                الاتفاقية
+                {t.footer.terms}
               </a>
             </div>
           </div>

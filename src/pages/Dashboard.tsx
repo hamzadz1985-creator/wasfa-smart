@@ -4,6 +4,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { LanguageSelector } from '@/components/LanguageSelector';
 import { 
   LayoutDashboard, 
   Users, 
@@ -27,7 +28,7 @@ import {
 type ActiveSection = 'overview' | 'patients' | 'prescriptions' | 'templates' | 'settings';
 
 const Dashboard: React.FC = () => {
-  const { t, dir } = useLanguage();
+  const { t, dir, language } = useLanguage();
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [activeSection, setActiveSection] = useState<ActiveSection>('overview');
@@ -80,7 +81,8 @@ const Dashboard: React.FC = () => {
     : (sidebarCollapsed ? ChevronRight : ChevronLeft);
 
   const formatDate = () => {
-    return new Date().toLocaleDateString('ar-SA', { 
+    const locale = language === 'ar' ? 'ar-SA' : language === 'fr' ? 'fr-FR' : 'en-US';
+    return new Date().toLocaleDateString(locale, { 
       weekday: 'long', 
       year: 'numeric', 
       month: 'long', 
@@ -91,7 +93,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-background dark flex" dir={dir}>
       {/* Sidebar */}
-      <aside className={`${sidebarCollapsed ? 'w-20' : 'w-64'} bg-sidebar border-e border-sidebar-border flex flex-col transition-all duration-300`}>
+      <aside className={`${sidebarCollapsed ? 'w-20' : 'w-64'} bg-sidebar border-e border-sidebar-border flex flex-col transition-all duration-300 relative`}>
         {/* Logo */}
         <div className="p-4 border-b border-sidebar-border">
           <div className="flex items-center gap-3">
@@ -143,7 +145,7 @@ const Dashboard: React.FC = () => {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-sidebar-foreground truncate">
-                  {user?.user_metadata?.full_name || 'المستخدم'}
+                  {user?.user_metadata?.full_name || t.dashboard.user}
                 </p>
                 <p className="text-xs text-sidebar-foreground/60 truncate">
                   {user?.email}
@@ -158,7 +160,7 @@ const Dashboard: React.FC = () => {
             title={sidebarCollapsed ? t.nav.logout : undefined}
           >
             <LogOut className="h-4 w-4" />
-            {!sidebarCollapsed && <span className="me-2">{t.nav.logout}</span>}
+            {!sidebarCollapsed && <span className="ms-2">{t.nav.logout}</span>}
           </Button>
         </div>
       </aside>
@@ -169,7 +171,7 @@ const Dashboard: React.FC = () => {
         <header className="h-16 border-b border-border flex items-center justify-between px-6 bg-card/50 sticky top-0 z-10">
           <div>
             <h1 className="text-xl font-semibold text-foreground">
-              {t.dashboard.welcome}، {user?.user_metadata?.full_name || 'دكتور'}
+              {t.dashboard.welcome}، {user?.user_metadata?.full_name || t.dashboard.doctor}
             </h1>
             <p className="text-sm text-muted-foreground flex items-center gap-2">
               <Clock className="h-4 w-4" />
@@ -184,12 +186,13 @@ const Dashboard: React.FC = () => {
                 className="ps-10 w-64"
               />
             </div>
+            <LanguageSelector />
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
               <span className="absolute top-1 end-1 w-2 h-2 bg-destructive rounded-full" />
             </Button>
             <Button variant="hero">
-              <Plus className="h-4 w-4 ms-2" />
+              <Plus className="h-4 w-4 me-2" />
               {t.dashboard.newPrescription}
             </Button>
           </div>
@@ -225,7 +228,7 @@ const Dashboard: React.FC = () => {
                     <Plus className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="font-semibold text-foreground mb-1">{t.prescription.new}</h3>
-                  <p className="text-sm text-muted-foreground">إنشاء وصفة طبية جديدة</p>
+                  <p className="text-sm text-muted-foreground">{t.dashboard.createNewPrescription}</p>
                 </button>
                 
                 <button className="glass rounded-xl p-6 border border-border/30 hover:border-info/50 transition-all text-start group">
@@ -233,15 +236,15 @@ const Dashboard: React.FC = () => {
                     <Users className="h-6 w-6 text-info" />
                   </div>
                   <h3 className="font-semibold text-foreground mb-1">{t.patient.add}</h3>
-                  <p className="text-sm text-muted-foreground">إضافة مريض جديد</p>
+                  <p className="text-sm text-muted-foreground">{t.dashboard.addNewPatient}</p>
                 </button>
                 
                 <button className="glass rounded-xl p-6 border border-border/30 hover:border-accent/50 transition-all text-start group">
                   <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-4 group-hover:bg-accent/20 transition-colors">
                     <LayoutTemplate className="h-6 w-6 text-accent" />
                   </div>
-                  <h3 className="font-semibold text-foreground mb-1">قالب جديد</h3>
-                  <p className="text-sm text-muted-foreground">إنشاء قالب وصفة</p>
+                  <h3 className="font-semibold text-foreground mb-1">{t.dashboard.newTemplate}</h3>
+                  <p className="text-sm text-muted-foreground">{t.dashboard.createPrescriptionTemplate}</p>
                 </button>
               </div>
 
@@ -252,14 +255,14 @@ const Dashboard: React.FC = () => {
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-foreground">{t.dashboard.recentPatients}</h3>
                     <Button variant="ghost" size="sm" className="text-primary">
-                      عرض الكل
+                      {t.dashboard.viewAll}
                     </Button>
                   </div>
                   <div className="text-center py-8 text-muted-foreground">
                     <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p>{t.patient.noPatients}</p>
                     <Button variant="outline" className="mt-4">
-                      <Plus className="h-4 w-4 ms-2" />
+                      <Plus className="h-4 w-4 me-2" />
                       {t.patient.add}
                     </Button>
                   </div>
@@ -270,14 +273,14 @@ const Dashboard: React.FC = () => {
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-foreground">{t.dashboard.recentPrescriptions}</h3>
                     <Button variant="ghost" size="sm" className="text-primary">
-                      عرض الكل
+                      {t.dashboard.viewAll}
                     </Button>
                   </div>
                   <div className="text-center py-8 text-muted-foreground">
                     <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p>{t.common.noData}</p>
                     <Button variant="outline" className="mt-4">
-                      <Plus className="h-4 w-4 ms-2" />
+                      <Plus className="h-4 w-4 me-2" />
                       {t.prescription.new}
                     </Button>
                   </div>
@@ -286,28 +289,28 @@ const Dashboard: React.FC = () => {
 
               {/* Doctor Info Card */}
               <div className="mt-6 glass rounded-xl border border-border/30 p-6">
-                <div className="flex items-start gap-6">
+                <div className="flex items-start gap-6 flex-wrap md:flex-nowrap">
                   <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center flex-shrink-0">
                     <Stethoscope className="h-10 w-10 text-primary-foreground" />
                   </div>
                   <div className="flex-1">
                     <h3 className="text-xl font-bold text-foreground mb-1">
-                      {user?.user_metadata?.full_name || 'اسم الطبيب'}
+                      {user?.user_metadata?.full_name || t.settings.fullName}
                     </h3>
-                    <p className="text-muted-foreground mb-4">طبيب عام</p>
+                    <p className="text-muted-foreground mb-4">{t.dashboard.generalDoctor}</p>
                     <div className="flex flex-wrap gap-4 text-sm">
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <Building2 className="h-4 w-4" />
-                        <span>العيادة الطبية</span>
+                        <span>{t.dashboard.clinic}</span>
                       </div>
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <FileText className="h-4 w-4" />
-                        <span>رقم الترخيص: ---</span>
+                        <span>{t.dashboard.licenseNumber}: ---</span>
                       </div>
                     </div>
                   </div>
                   <Button variant="outline">
-                    تعديل الملف الشخصي
+                    {t.dashboard.editProfile}
                   </Button>
                 </div>
               </div>
@@ -316,10 +319,10 @@ const Dashboard: React.FC = () => {
 
           {activeSection === 'patients' && (
             <div className="glass rounded-xl border border-border/30 p-6">
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
                 <h2 className="text-2xl font-bold text-foreground">{t.dashboard.patients}</h2>
                 <Button variant="hero">
-                  <Plus className="h-4 w-4 ms-2" />
+                  <Plus className="h-4 w-4 me-2" />
                   {t.patient.add}
                 </Button>
               </div>
@@ -332,41 +335,41 @@ const Dashboard: React.FC = () => {
               <div className="text-center py-16 text-muted-foreground">
                 <Users className="h-16 w-16 mx-auto mb-4 opacity-50" />
                 <p className="text-lg">{t.patient.noPatients}</p>
-                <p className="text-sm mt-2">ابدأ بإضافة مريض جديد</p>
+                <p className="text-sm mt-2">{t.dashboard.startAddPatient}</p>
               </div>
             </div>
           )}
 
           {activeSection === 'prescriptions' && (
             <div className="glass rounded-xl border border-border/30 p-6">
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
                 <h2 className="text-2xl font-bold text-foreground">{t.dashboard.prescriptions}</h2>
                 <Button variant="hero">
-                  <Plus className="h-4 w-4 ms-2" />
+                  <Plus className="h-4 w-4 me-2" />
                   {t.prescription.new}
                 </Button>
               </div>
               <div className="text-center py-16 text-muted-foreground">
                 <FileText className="h-16 w-16 mx-auto mb-4 opacity-50" />
                 <p className="text-lg">{t.common.noData}</p>
-                <p className="text-sm mt-2">ابدأ بإنشاء وصفة طبية جديدة</p>
+                <p className="text-sm mt-2">{t.dashboard.startCreatePrescription}</p>
               </div>
             </div>
           )}
 
           {activeSection === 'templates' && (
             <div className="glass rounded-xl border border-border/30 p-6">
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
                 <h2 className="text-2xl font-bold text-foreground">{t.dashboard.templates}</h2>
                 <Button variant="hero">
-                  <Plus className="h-4 w-4 ms-2" />
-                  قالب جديد
+                  <Plus className="h-4 w-4 me-2" />
+                  {t.dashboard.newTemplate}
                 </Button>
               </div>
               <div className="text-center py-16 text-muted-foreground">
                 <LayoutTemplate className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                <p className="text-lg">لا توجد قوالب</p>
-                <p className="text-sm mt-2">أنشئ قوالب للوصفات المتكررة</p>
+                <p className="text-lg">{t.dashboard.noTemplates}</p>
+                <p className="text-sm mt-2">{t.dashboard.createTemplatesHint}</p>
               </div>
             </div>
           )}
@@ -376,41 +379,41 @@ const Dashboard: React.FC = () => {
               <h2 className="text-2xl font-bold text-foreground mb-6">{t.dashboard.settings}</h2>
               <div className="space-y-6">
                 <div className="border-b border-border pb-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">معلومات الطبيب</h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-4">{t.settings.doctorInfo}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm text-muted-foreground mb-2">الاسم الكامل</label>
+                      <label className="block text-sm text-muted-foreground mb-2">{t.settings.fullName}</label>
                       <Input defaultValue={user?.user_metadata?.full_name || ''} />
                     </div>
                     <div>
-                      <label className="block text-sm text-muted-foreground mb-2">التخصص</label>
-                      <Input placeholder="طبيب عام" />
+                      <label className="block text-sm text-muted-foreground mb-2">{t.settings.specialty}</label>
+                      <Input placeholder={t.dashboard.generalDoctor} />
                     </div>
                     <div>
-                      <label className="block text-sm text-muted-foreground mb-2">رقم الترخيص</label>
-                      <Input placeholder="رقم الترخيص الطبي" />
+                      <label className="block text-sm text-muted-foreground mb-2">{t.settings.licenseNumber}</label>
+                      <Input placeholder={t.settings.licenseNumber} />
                     </div>
                     <div>
-                      <label className="block text-sm text-muted-foreground mb-2">الهاتف</label>
+                      <label className="block text-sm text-muted-foreground mb-2">{t.settings.phone}</label>
                       <Input placeholder="+966 50 000 0000" />
                     </div>
                   </div>
                 </div>
                 
                 <div className="border-b border-border pb-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">معلومات العيادة</h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-4">{t.settings.clinicInfo}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm text-muted-foreground mb-2">اسم العيادة</label>
-                      <Input placeholder="عيادة الصحة" />
+                      <label className="block text-sm text-muted-foreground mb-2">{t.settings.clinicName}</label>
+                      <Input placeholder={t.settings.clinicName} />
                     </div>
                     <div>
-                      <label className="block text-sm text-muted-foreground mb-2">العنوان</label>
-                      <Input placeholder="العنوان" />
+                      <label className="block text-sm text-muted-foreground mb-2">{t.settings.address}</label>
+                      <Input placeholder={t.settings.address} />
                     </div>
                     <div className="md:col-span-2">
-                      <label className="block text-sm text-muted-foreground mb-2">ملاحظة الوصفة (تذييل)</label>
-                      <Input placeholder="نص يظهر في أسفل الوصفة" />
+                      <label className="block text-sm text-muted-foreground mb-2">{t.settings.prescriptionFooter}</label>
+                      <Input placeholder={t.settings.prescriptionFooterHint} />
                     </div>
                   </div>
                 </div>

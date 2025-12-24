@@ -124,7 +124,7 @@ export const PricingSection: React.FC = () => {
                   </div>
                 ) : (
                   <div className="text-2xl font-bold text-muted-foreground">
-                    حسب الطلب
+                    {t.pricing.onQuote}
                   </div>
                 )}
               </div>
@@ -157,7 +157,7 @@ export const PricingSection: React.FC = () => {
 
         {/* Free Trial Note */}
         <p className="text-center text-sm text-muted-foreground mt-8">
-          {t.pricing.freeTrial} • بدون بطاقة ائتمان
+          {t.pricing.freeTrial} • {t.pricing.noCardRequired}
         </p>
       </div>
     </section>

@@ -2,7 +2,7 @@ import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Sparkles, Shield, Zap, Clock } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Sparkles, Shield, Clock } from 'lucide-react';
 
 export const HeroSection: React.FC = () => {
   const { t, dir } = useLanguage();
@@ -56,11 +56,11 @@ export const HeroSection: React.FC = () => {
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 animate-fade-in" style={{ animationDelay: '0.6s' }}>
             <div className="flex items-center gap-2">
               <Shield className="h-5 w-5 text-primary" />
-              <span className="text-sm text-muted-foreground">بيانات مشفرة وآمنة</span>
+              <span className="text-sm text-muted-foreground">{t.hero.secureData}</span>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="h-5 w-5 text-accent" />
-              <span className="text-sm text-muted-foreground">إعداد في دقيقتين</span>
+              <span className="text-sm text-muted-foreground">{t.hero.quickSetup}</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">{t.hero.trustedBy}</span>

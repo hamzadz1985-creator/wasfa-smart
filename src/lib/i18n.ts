@@ -31,6 +31,8 @@ export const translations = {
       ctaSecondary: 'Voir la Démo',
       trustedBy: 'Fait confiance par plus de',
       doctors: 'médecins',
+      secureData: 'Données sécurisées',
+      quickSetup: 'Installation en 2 minutes',
     },
     // Features
     features: {
@@ -73,6 +75,8 @@ export const translations = {
       freeTrial: 'Essai gratuit de 14 jours',
       startTrial: 'Commencer l\'essai',
       contact: 'Nous contacter',
+      noCardRequired: 'Aucune carte de crédit requise',
+      onQuote: 'Sur devis',
       solo: {
         name: 'Solo',
         description: 'Parfait pour les médecins indépendants',
@@ -129,6 +133,12 @@ export const translations = {
       emailRequired: 'L\'email est requis',
       passwordRequired: 'Le mot de passe est requis',
       passwordMismatch: 'Les mots de passe ne correspondent pas',
+      passwordMinLength: 'Le mot de passe doit contenir au moins 6 caractères',
+      emailAlreadyUsed: 'Cet email est déjà utilisé',
+      confirmEmail: 'Veuillez confirmer votre email',
+      unexpectedError: 'Une erreur inattendue s\'est produite',
+      createAccountSubtitle: 'Créez votre compte pour commencer',
+      loginSubtitle: 'Connectez-vous à votre compte',
     },
     // Dashboard
     dashboard: {
@@ -146,6 +156,22 @@ export const translations = {
       today: 'Aujourd\'hui',
       thisWeek: 'Cette semaine',
       thisMonth: 'Ce mois',
+      viewAll: 'Voir tout',
+      quickActions: 'Actions rapides',
+      newTemplate: 'Nouveau modèle',
+      createNewPrescription: 'Créer une nouvelle ordonnance',
+      addNewPatient: 'Ajouter un nouveau patient',
+      createPrescriptionTemplate: 'Créer un modèle de prescription',
+      doctor: 'Docteur',
+      user: 'Utilisateur',
+      generalDoctor: 'Médecin généraliste',
+      clinic: 'Cabinet médical',
+      licenseNumber: 'Numéro de licence',
+      editProfile: 'Modifier le profil',
+      noTemplates: 'Aucun modèle',
+      createTemplatesHint: 'Créez des modèles pour les prescriptions récurrentes',
+      startAddPatient: 'Commencez par ajouter un patient',
+      startCreatePrescription: 'Commencez par créer une ordonnance',
     },
     // Patients
     patient: {
@@ -185,6 +211,35 @@ export const translations = {
       duplicate: 'Dupliquer',
       delete: 'Supprimer',
       created: 'Ordonnance créée avec succès',
+    },
+    // Settings
+    settings: {
+      doctorInfo: 'Informations du médecin',
+      clinicInfo: 'Informations du cabinet',
+      fullName: 'Nom complet',
+      specialty: 'Spécialité',
+      licenseNumber: 'Numéro de licence médicale',
+      phone: 'Téléphone',
+      clinicName: 'Nom du cabinet',
+      address: 'Adresse',
+      prescriptionFooter: 'Note de prescription (pied de page)',
+      prescriptionFooterHint: 'Texte affiché en bas de la prescription',
+    },
+    // Footer
+    footer: {
+      description: 'La solution professionnelle pour la gestion des ordonnances médicales. Sécurisée, intuitive et conforme aux normes.',
+      product: 'Produit',
+      security: 'Sécurité',
+      resources: 'Ressources',
+      documentation: 'Documentation',
+      gettingStarted: 'Guide de démarrage',
+      faq: 'FAQ',
+      support: 'Support',
+      contact: 'Contact',
+      allRightsReserved: 'Tous droits réservés',
+      legalNotice: 'Mentions légales',
+      privacyPolicy: 'Politique de confidentialité',
+      terms: 'CGV',
     },
     // Common
     common: {
@@ -226,6 +281,8 @@ export const translations = {
       ctaSecondary: 'شاهد العرض',
       trustedBy: 'موثوق من قبل أكثر من',
       doctors: 'طبيب',
+      secureData: 'بيانات مشفرة وآمنة',
+      quickSetup: 'إعداد في دقيقتين',
     },
     // Features
     features: {
@@ -268,6 +325,8 @@ export const translations = {
       freeTrial: 'تجربة مجانية لمدة 14 يوم',
       startTrial: 'ابدأ التجربة',
       contact: 'تواصل معنا',
+      noCardRequired: 'بدون بطاقة ائتمان',
+      onQuote: 'حسب الطلب',
       solo: {
         name: 'فردي',
         description: 'مثالي للأطباء المستقلين',
@@ -324,6 +383,12 @@ export const translations = {
       emailRequired: 'البريد الإلكتروني مطلوب',
       passwordRequired: 'كلمة المرور مطلوبة',
       passwordMismatch: 'كلمات المرور غير متطابقة',
+      passwordMinLength: 'كلمة المرور يجب أن تكون 6 أحرف على الأقل',
+      emailAlreadyUsed: 'هذا البريد الإلكتروني مستخدم بالفعل',
+      confirmEmail: 'يرجى تأكيد بريدك الإلكتروني',
+      unexpectedError: 'حدث خطأ غير متوقع',
+      createAccountSubtitle: 'أنشئ حسابك للبدء',
+      loginSubtitle: 'سجل دخولك إلى حسابك',
     },
     // Dashboard
     dashboard: {
@@ -341,6 +406,22 @@ export const translations = {
       today: 'اليوم',
       thisWeek: 'هذا الأسبوع',
       thisMonth: 'هذا الشهر',
+      viewAll: 'عرض الكل',
+      quickActions: 'إجراءات سريعة',
+      newTemplate: 'قالب جديد',
+      createNewPrescription: 'إنشاء وصفة طبية جديدة',
+      addNewPatient: 'إضافة مريض جديد',
+      createPrescriptionTemplate: 'إنشاء قالب وصفة',
+      doctor: 'دكتور',
+      user: 'المستخدم',
+      generalDoctor: 'طبيب عام',
+      clinic: 'العيادة الطبية',
+      licenseNumber: 'رقم الترخيص',
+      editProfile: 'تعديل الملف الشخصي',
+      noTemplates: 'لا توجد قوالب',
+      createTemplatesHint: 'أنشئ قوالب للوصفات المتكررة',
+      startAddPatient: 'ابدأ بإضافة مريض جديد',
+      startCreatePrescription: 'ابدأ بإنشاء وصفة طبية جديدة',
     },
     // Patients
     patient: {
@@ -380,6 +461,35 @@ export const translations = {
       duplicate: 'نسخ',
       delete: 'حذف',
       created: 'تم إنشاء الوصفة بنجاح',
+    },
+    // Settings
+    settings: {
+      doctorInfo: 'معلومات الطبيب',
+      clinicInfo: 'معلومات العيادة',
+      fullName: 'الاسم الكامل',
+      specialty: 'التخصص',
+      licenseNumber: 'رقم الترخيص الطبي',
+      phone: 'الهاتف',
+      clinicName: 'اسم العيادة',
+      address: 'العنوان',
+      prescriptionFooter: 'ملاحظة الوصفة (تذييل)',
+      prescriptionFooterHint: 'نص يظهر في أسفل الوصفة',
+    },
+    // Footer
+    footer: {
+      description: 'الحل الاحترافي لإدارة الوصفات الطبية. آمن وسهل الاستخدام ومتوافق مع المعايير الصحية.',
+      product: 'المنتج',
+      security: 'الأمان',
+      resources: 'الموارد',
+      documentation: 'التوثيق',
+      gettingStarted: 'دليل البدء',
+      faq: 'الأسئلة الشائعة',
+      support: 'الدعم الفني',
+      contact: 'تواصل معنا',
+      allRightsReserved: 'جميع الحقوق محفوظة',
+      legalNotice: 'الشروط والأحكام',
+      privacyPolicy: 'سياسة الخصوصية',
+      terms: 'الاتفاقية',
     },
     // Common
     common: {
@@ -421,6 +531,8 @@ export const translations = {
       ctaSecondary: 'View Demo',
       trustedBy: 'Trusted by over',
       doctors: 'doctors',
+      secureData: 'Secure & Encrypted Data',
+      quickSetup: 'Setup in 2 minutes',
     },
     // Features
     features: {
@@ -463,6 +575,8 @@ export const translations = {
       freeTrial: '14-day free trial',
       startTrial: 'Start Trial',
       contact: 'Contact Us',
+      noCardRequired: 'No credit card required',
+      onQuote: 'On quote',
       solo: {
         name: 'Solo',
         description: 'Perfect for independent doctors',
@@ -519,6 +633,12 @@ export const translations = {
       emailRequired: 'Email is required',
       passwordRequired: 'Password is required',
       passwordMismatch: 'Passwords do not match',
+      passwordMinLength: 'Password must be at least 6 characters',
+      emailAlreadyUsed: 'This email is already in use',
+      confirmEmail: 'Please confirm your email',
+      unexpectedError: 'An unexpected error occurred',
+      createAccountSubtitle: 'Create your account to get started',
+      loginSubtitle: 'Sign in to your account',
     },
     // Dashboard
     dashboard: {
@@ -536,6 +656,22 @@ export const translations = {
       today: 'Today',
       thisWeek: 'This Week',
       thisMonth: 'This Month',
+      viewAll: 'View All',
+      quickActions: 'Quick Actions',
+      newTemplate: 'New Template',
+      createNewPrescription: 'Create a new prescription',
+      addNewPatient: 'Add a new patient',
+      createPrescriptionTemplate: 'Create prescription template',
+      doctor: 'Doctor',
+      user: 'User',
+      generalDoctor: 'General Practitioner',
+      clinic: 'Medical Clinic',
+      licenseNumber: 'License Number',
+      editProfile: 'Edit Profile',
+      noTemplates: 'No templates',
+      createTemplatesHint: 'Create templates for recurring prescriptions',
+      startAddPatient: 'Start by adding a patient',
+      startCreatePrescription: 'Start by creating a prescription',
     },
     // Patients
     patient: {
@@ -575,6 +711,35 @@ export const translations = {
       duplicate: 'Duplicate',
       delete: 'Delete',
       created: 'Prescription created successfully',
+    },
+    // Settings
+    settings: {
+      doctorInfo: 'Doctor Information',
+      clinicInfo: 'Clinic Information',
+      fullName: 'Full Name',
+      specialty: 'Specialty',
+      licenseNumber: 'Medical License Number',
+      phone: 'Phone',
+      clinicName: 'Clinic Name',
+      address: 'Address',
+      prescriptionFooter: 'Prescription Note (Footer)',
+      prescriptionFooterHint: 'Text displayed at the bottom of the prescription',
+    },
+    // Footer
+    footer: {
+      description: 'The professional solution for medical prescription management. Secure, intuitive, and standards-compliant.',
+      product: 'Product',
+      security: 'Security',
+      resources: 'Resources',
+      documentation: 'Documentation',
+      gettingStarted: 'Getting Started',
+      faq: 'FAQ',
+      support: 'Support',
+      contact: 'Contact Us',
+      allRightsReserved: 'All rights reserved',
+      legalNotice: 'Legal Notice',
+      privacyPolicy: 'Privacy Policy',
+      terms: 'Terms of Service',
     },
     // Common
     common: {
