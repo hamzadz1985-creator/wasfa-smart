@@ -67,7 +67,7 @@ const Auth: React.FC = () => {
         if (formData.password.length < 6) {
           toast({
             title: t.common.error,
-            description: 'كلمة المرور يجب أن تكون 6 أحرف على الأقل',
+            description: t.auth.passwordMinLength,
             variant: 'destructive',
           });
           setIsLoading(false);
@@ -90,7 +90,7 @@ const Auth: React.FC = () => {
         if (error) {
           let errorMessage = error.message;
           if (error.message.includes('already registered')) {
-            errorMessage = 'هذا البريد الإلكتروني مستخدم بالفعل';
+            errorMessage = t.auth.emailAlreadyUsed;
           }
           toast({
             title: t.common.error,
@@ -114,7 +114,7 @@ const Auth: React.FC = () => {
           if (error.message.includes('Invalid login credentials')) {
             errorMessage = t.auth.invalidCredentials;
           } else if (error.message.includes('Email not confirmed')) {
-            errorMessage = 'يرجى تأكيد بريدك الإلكتروني';
+            errorMessage = t.auth.confirmEmail;
           }
           toast({
             title: t.common.error,
@@ -131,7 +131,7 @@ const Auth: React.FC = () => {
     } catch (error) {
       toast({
         title: t.common.error,
-        description: 'حدث خطأ غير متوقع',
+        description: t.auth.unexpectedError,
         variant: 'destructive',
       });
     } finally {
@@ -163,7 +163,7 @@ const Auth: React.FC = () => {
             {isSignup ? t.auth.signup : t.auth.login}
           </h1>
           <p className="text-muted-foreground text-center mb-8">
-            {isSignup ? 'أنشئ حسابك للبدء' : 'سجل دخولك إلى حسابك'}
+            {isSignup ? t.auth.createAccountSubtitle : t.auth.loginSubtitle}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -174,7 +174,7 @@ const Auth: React.FC = () => {
                   <User className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input 
                     id="name" 
-                    placeholder="د. أحمد محمد" 
+                    placeholder="Dr. John Doe" 
                     className="ps-10"
                     value={formData.name}
                     onChange={handleInputChange}
