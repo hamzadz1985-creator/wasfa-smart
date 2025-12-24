@@ -7,15 +7,15 @@ import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 
 export const LandingHeader: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, dir } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/30">
+    <header className="fixed top-0 start-0 end-0 z-50 glass border-b border-border/30" dir={dir}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-lg">W</span>
             </div>

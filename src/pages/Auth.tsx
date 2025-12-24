@@ -4,12 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Mail, Lock, User, Loader2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Mail, Lock, User, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 const Auth: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, dir } = useLanguage();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -23,7 +23,6 @@ const Auth: React.FC = () => {
     confirmPassword: '',
   });
 
-  // Check if user is already logged in
   useEffect(() => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -55,7 +54,6 @@ const Auth: React.FC = () => {
 
     try {
       if (isSignup) {
-        // Validation
         if (formData.password !== formData.confirmPassword) {
           toast({
             title: t.common.error,
@@ -69,7 +67,7 @@ const Auth: React.FC = () => {
         if (formData.password.length < 6) {
           toast({
             title: t.common.error,
-            description: 'Le mot de passe doit contenir au moins 6 caractères',
+            description: 'كلمة المرور يجب أن تكون 6 أحرف على الأقل',
             variant: 'destructive',
           });
           setIsLoading(false);
@@ -92,7 +90,7 @@ const Auth: React.FC = () => {
         if (error) {
           let errorMessage = error.message;
           if (error.message.includes('already registered')) {
-            errorMessage = 'Cet email est déjà utilisé';
+            errorMessage = 'هذا البريد الإلكتروني مستخدم بالفعل';
           }
           toast({
             title: t.common.error,
@@ -106,7 +104,6 @@ const Auth: React.FC = () => {
           });
         }
       } else {
-        // Login
         const { error } = await supabase.auth.signInWithPassword({
           email: formData.email,
           password: formData.password,
@@ -117,7 +114,7 @@ const Auth: React.FC = () => {
           if (error.message.includes('Invalid login credentials')) {
             errorMessage = t.auth.invalidCredentials;
           } else if (error.message.includes('Email not confirmed')) {
-            errorMessage = 'Veuillez confirmer votre email';
+            errorMessage = 'يرجى تأكيد بريدك الإلكتروني';
           }
           toast({
             title: t.common.error,
@@ -134,7 +131,7 @@ const Auth: React.FC = () => {
     } catch (error) {
       toast({
         title: t.common.error,
-        description: 'Une erreur est survenue',
+        description: 'حدث خطأ غير متوقع',
         variant: 'destructive',
       });
     } finally {
@@ -142,46 +139,43 @@ const Auth: React.FC = () => {
     }
   };
 
+  const BackArrow = dir === 'rtl' ? ArrowRight : ArrowLeft;
+
   return (
-    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4 dark">
+    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4 dark" dir={dir}>
       <div className="absolute inset-0 bg-hero-pattern opacity-30" />
       
       <div className="w-full max-w-md relative z-10">
-        {/* Back Link */}
         <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors">
-          <ArrowLeft className="h-4 w-4" />
+          <BackArrow className="h-4 w-4" />
           {t.common.back}
         </Link>
 
-        {/* Auth Card */}
         <div className="glass rounded-2xl p-8 border border-border/50">
-          {/* Logo */}
-          <div className="flex items-center justify-center gap-2 mb-8">
+          <div className="flex items-center justify-center gap-3 mb-8">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-xl">W</span>
             </div>
             <span className="text-2xl font-bold text-foreground">WASFA PRO</span>
           </div>
 
-          {/* Title */}
           <h1 className="text-2xl font-bold text-center mb-2 text-foreground">
             {isSignup ? t.auth.signup : t.auth.login}
           </h1>
           <p className="text-muted-foreground text-center mb-8">
-            {isSignup ? 'Créez votre compte pour commencer' : 'Connectez-vous à votre compte'}
+            {isSignup ? 'أنشئ حسابك للبدء' : 'سجل دخولك إلى حسابك'}
           </p>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {isSignup && (
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-foreground">{t.auth.fullName}</Label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <User className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input 
                     id="name" 
-                    placeholder="Dr. Jean Dupont" 
-                    className="pl-10"
+                    placeholder="د. أحمد محمد" 
+                    className="ps-10"
                     value={formData.name}
                     onChange={handleInputChange}
                     required
@@ -193,12 +187,12 @@ const Auth: React.FC = () => {
             <div className="space-y-2">
               <Label htmlFor="email" className="text-foreground">{t.auth.email}</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Mail className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input 
                   id="email" 
                   type="email" 
-                  placeholder="docteur@exemple.com" 
-                  className="pl-10"
+                  placeholder="doctor@example.com" 
+                  className="ps-10"
                   value={formData.email}
                   onChange={handleInputChange}
                   required
@@ -209,12 +203,12 @@ const Auth: React.FC = () => {
             <div className="space-y-2">
               <Label htmlFor="password" className="text-foreground">{t.auth.password}</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Lock className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input 
                   id="password" 
                   type="password" 
                   placeholder="••••••••" 
-                  className="pl-10"
+                  className="ps-10"
                   value={formData.password}
                   onChange={handleInputChange}
                   required
@@ -227,12 +221,12 @@ const Auth: React.FC = () => {
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword" className="text-foreground">{t.auth.confirmPassword}</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Lock className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input 
                     id="confirmPassword" 
                     type="password" 
                     placeholder="••••••••" 
-                    className="pl-10"
+                    className="ps-10"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                     required
@@ -243,7 +237,7 @@ const Auth: React.FC = () => {
             )}
 
             {!isSignup && (
-              <div className="text-right">
+              <div className="text-start">
                 <a href="#" className="text-sm text-primary hover:underline">
                   {t.auth.forgotPassword}
                 </a>
@@ -262,7 +256,6 @@ const Auth: React.FC = () => {
             </Button>
           </form>
 
-          {/* Toggle */}
           <p className="text-center text-sm text-muted-foreground mt-6">
             {isSignup ? t.auth.hasAccount : t.auth.noAccount}{' '}
             <button

@@ -6,7 +6,7 @@ import { Check, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export const PricingSection: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, dir } = useLanguage();
   const [isYearly, setIsYearly] = useState(false);
 
   const plans = [
@@ -37,9 +37,9 @@ export const PricingSection: React.FC = () => {
   ];
 
   return (
-    <section id="pricing" className="py-24 bg-gradient-to-b from-background to-secondary/20 relative overflow-hidden">
+    <section id="pricing" className="py-24 bg-gradient-to-b from-background to-secondary/20 relative overflow-hidden" dir={dir}>
       {/* Background Elements */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl" />
       
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
@@ -70,7 +70,7 @@ export const PricingSection: React.FC = () => {
             <div
               className={cn(
                 "absolute top-1 w-5 h-5 bg-primary-foreground rounded-full transition-all",
-                isYearly ? "left-8" : "left-1"
+                isYearly ? "start-8" : "start-1"
               )}
             />
           </button>
@@ -89,7 +89,7 @@ export const PricingSection: React.FC = () => {
 
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
-          {plans.map((plan, index) => (
+          {plans.map((plan) => (
             <div
               key={plan.key}
               className={cn(
@@ -101,7 +101,7 @@ export const PricingSection: React.FC = () => {
             >
               {/* Popular Badge */}
               {plan.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                <div className="absolute -top-4 start-1/2 -translate-x-1/2 rtl:translate-x-1/2">
                   <div className="flex items-center gap-1 px-3 py-1 bg-primary text-primary-foreground text-xs font-medium rounded-full">
                     <Sparkles className="h-3 w-3" />
                     {t.pricing.popular}
@@ -119,12 +119,12 @@ export const PricingSection: React.FC = () => {
               <div className="mb-6">
                 {plan.price ? (
                   <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold">{plan.price}€</span>
+                    <span className="text-4xl font-bold">{plan.price}$</span>
                     <span className="text-muted-foreground">{t.pricing.perMonth}</span>
                   </div>
                 ) : (
                   <div className="text-2xl font-bold text-muted-foreground">
-                    Sur devis
+                    حسب الطلب
                   </div>
                 )}
               </div>
@@ -157,7 +157,7 @@ export const PricingSection: React.FC = () => {
 
         {/* Free Trial Note */}
         <p className="text-center text-sm text-muted-foreground mt-8">
-          {t.pricing.freeTrial} • Aucune carte de crédit requise
+          {t.pricing.freeTrial} • بدون بطاقة ائتمان
         </p>
       </div>
     </section>
