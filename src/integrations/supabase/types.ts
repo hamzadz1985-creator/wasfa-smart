@@ -14,16 +14,411 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      favorite_medications: {
+        Row: {
+          created_at: string | null
+          created_by: string
+          dosage: string | null
+          duration: string | null
+          form: string | null
+          frequency: string | null
+          id: string
+          medication_name: string
+          tenant_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by: string
+          dosage?: string | null
+          duration?: string | null
+          form?: string | null
+          frequency?: string | null
+          id?: string
+          medication_name: string
+          tenant_id: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string
+          dosage?: string | null
+          duration?: string | null
+          form?: string | null
+          frequency?: string | null
+          id?: string
+          medication_name?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorite_medications_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patients: {
+        Row: {
+          allergies: string | null
+          chronic_diseases: string | null
+          created_at: string | null
+          created_by: string | null
+          date_of_birth: string | null
+          full_name: string
+          gender: Database["public"]["Enums"]["gender_type"] | null
+          id: string
+          is_archived: boolean | null
+          notes: string | null
+          phone: string | null
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          allergies?: string | null
+          chronic_diseases?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          date_of_birth?: string | null
+          full_name: string
+          gender?: Database["public"]["Enums"]["gender_type"] | null
+          id?: string
+          is_archived?: boolean | null
+          notes?: string | null
+          phone?: string | null
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          allergies?: string | null
+          chronic_diseases?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          date_of_birth?: string | null
+          full_name?: string
+          gender?: Database["public"]["Enums"]["gender_type"] | null
+          id?: string
+          is_archived?: boolean | null
+          notes?: string | null
+          phone?: string | null
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patients_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prescription_medications: {
+        Row: {
+          created_at: string | null
+          dosage: string | null
+          duration: string | null
+          form: string | null
+          frequency: string | null
+          id: string
+          medication_name: string
+          notes: string | null
+          prescription_id: string
+          sort_order: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          dosage?: string | null
+          duration?: string | null
+          form?: string | null
+          frequency?: string | null
+          id?: string
+          medication_name: string
+          notes?: string | null
+          prescription_id: string
+          sort_order?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          dosage?: string | null
+          duration?: string | null
+          form?: string | null
+          frequency?: string | null
+          id?: string
+          medication_name?: string
+          notes?: string | null
+          prescription_id?: string
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prescription_medications_prescription_id_fkey"
+            columns: ["prescription_id"]
+            isOneToOne: false
+            referencedRelation: "prescriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prescription_templates: {
+        Row: {
+          created_at: string | null
+          created_by: string
+          description: string | null
+          id: string
+          name: string
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by: string
+          description?: string | null
+          id?: string
+          name: string
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string
+          description?: string | null
+          id?: string
+          name?: string
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prescription_templates_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prescriptions: {
+        Row: {
+          created_at: string | null
+          doctor_id: string
+          id: string
+          notes: string | null
+          patient_id: string
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          doctor_id: string
+          id?: string
+          notes?: string | null
+          patient_id: string
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          doctor_id?: string
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prescriptions_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prescriptions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          full_name: string
+          id: string
+          license_number: string | null
+          phone: string | null
+          signature_url: string | null
+          specialty: string | null
+          tenant_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          full_name: string
+          id: string
+          license_number?: string | null
+          phone?: string | null
+          signature_url?: string | null
+          specialty?: string | null
+          tenant_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          full_name?: string
+          id?: string
+          license_number?: string | null
+          phone?: string | null
+          signature_url?: string | null
+          specialty?: string | null
+          tenant_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      template_medications: {
+        Row: {
+          created_at: string | null
+          dosage: string | null
+          duration: string | null
+          form: string | null
+          frequency: string | null
+          id: string
+          medication_name: string
+          notes: string | null
+          sort_order: number | null
+          template_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          dosage?: string | null
+          duration?: string | null
+          form?: string | null
+          frequency?: string | null
+          id?: string
+          medication_name: string
+          notes?: string | null
+          sort_order?: number | null
+          template_id: string
+        }
+        Update: {
+          created_at?: string | null
+          dosage?: string | null
+          duration?: string | null
+          form?: string | null
+          frequency?: string | null
+          id?: string
+          medication_name?: string
+          notes?: string | null
+          sort_order?: number | null
+          template_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "template_medications_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "prescription_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenants: {
+        Row: {
+          address: string | null
+          created_at: string | null
+          footer_note: string | null
+          id: string
+          logo_url: string | null
+          name: string
+          phone: string | null
+          subscription_status:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+          trial_ends_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string | null
+          footer_note?: string | null
+          id?: string
+          logo_url?: string | null
+          name: string
+          phone?: string | null
+          subscription_status?:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+          trial_ends_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string | null
+          footer_note?: string | null
+          id?: string
+          logo_url?: string | null
+          name?: string
+          phone?: string | null
+          subscription_status?:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+          trial_ends_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_tenant_id: { Args: { _user_id: string }; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "super_admin" | "clinic_admin" | "doctor" | "assistant"
+      gender_type: "male" | "female"
+      subscription_status: "trial" | "active" | "expired" | "suspended"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +545,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["super_admin", "clinic_admin", "doctor", "assistant"],
+      gender_type: ["male", "female"],
+      subscription_status: ["trial", "active", "expired", "suspended"],
+    },
   },
 } as const
