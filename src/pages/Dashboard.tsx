@@ -3,8 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { LanguageSelector } from '@/components/LanguageSelector';
+import { PatientsList } from '@/components/patients/PatientsList';
+import { PrescriptionsList } from '@/components/prescriptions/PrescriptionsList';
+import { TemplatesList } from '@/components/templates/TemplatesList';
+import { SettingsPanel } from '@/components/settings/SettingsPanel';
+import { usePatients } from '@/hooks/usePatients';
+import { usePrescriptions } from '@/hooks/usePrescriptions';
+import { useTemplates } from '@/hooks/useTemplates';
+import { useProfile } from '@/hooks/useProfile';
 import { 
   LayoutDashboard, 
   Users, 
@@ -16,13 +23,13 @@ import {
   TrendingUp,
   Calendar,
   Clock,
-  Search,
   Bell,
   ChevronLeft,
   ChevronRight,
   User,
   Stethoscope,
-  Building2
+  Building2,
+  Activity
 } from 'lucide-react';
 
 type ActiveSection = 'overview' | 'patients' | 'prescriptions' | 'templates' | 'settings';
@@ -33,6 +40,11 @@ const Dashboard: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [activeSection, setActiveSection] = useState<ActiveSection>('overview');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  const { patients } = usePatients();
+  const { prescriptions } = usePrescriptions();
+  const { templates } = useTemplates();
+  const { profile, tenant } = useProfile();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -61,11 +73,17 @@ const Dashboard: React.FC = () => {
     navigate('/');
   };
 
+  // Calculate today's prescriptions
+  const today = new Date().toISOString().split('T')[0];
+  const todayPrescriptions = prescriptions.filter(p => 
+    p.created_at?.startsWith(today)
+  ).length;
+
   const stats = [
-    { label: t.dashboard.patients, value: '0', icon: Users, color: 'text-info', bgColor: 'bg-info/10' },
-    { label: t.dashboard.prescriptions, value: '0', icon: FileText, color: 'text-primary', bgColor: 'bg-primary/10' },
-    { label: t.dashboard.templates, value: '0', icon: LayoutTemplate, color: 'text-accent', bgColor: 'bg-accent/10' },
-    { label: t.dashboard.today, value: '0', icon: Calendar, color: 'text-success', bgColor: 'bg-success/10' },
+    { label: t.dashboard.patients, value: patients.length.toString(), icon: Users, color: 'text-info', bgColor: 'bg-info/10' },
+    { label: t.dashboard.prescriptions, value: prescriptions.length.toString(), icon: FileText, color: 'text-primary', bgColor: 'bg-primary/10' },
+    { label: t.dashboard.templates, value: templates.length.toString(), icon: LayoutTemplate, color: 'text-accent', bgColor: 'bg-accent/10' },
+    { label: t.dashboard.today, value: todayPrescriptions.toString(), icon: Calendar, color: 'text-success', bgColor: 'bg-success/10' },
   ];
 
   const menuItems = [
@@ -89,6 +107,9 @@ const Dashboard: React.FC = () => {
       day: 'numeric' 
     });
   };
+
+  const doctorName = profile?.full_name || user?.user_metadata?.full_name || t.dashboard.doctor;
+  const clinicName = tenant?.name || t.dashboard.clinic;
 
   return (
     <div className="min-h-screen bg-background dark flex" dir={dir}>
@@ -121,10 +142,10 @@ const Dashboard: React.FC = () => {
               <li key={item.key}>
                 <button
                   onClick={() => setActiveSection(item.key)}
-                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
+                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 ${
                     activeSection === item.key 
-                      ? 'bg-sidebar-accent text-sidebar-primary' 
-                      : 'text-sidebar-foreground hover:bg-sidebar-accent/50'
+                      ? 'bg-sidebar-accent text-sidebar-primary shadow-md' 
+                      : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:translate-x-1'
                   }`}
                   title={sidebarCollapsed ? item.label : undefined}
                 >
@@ -145,7 +166,7 @@ const Dashboard: React.FC = () => {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-sidebar-foreground truncate">
-                  {user?.user_metadata?.full_name || t.dashboard.user}
+                  {doctorName}
                 </p>
                 <p className="text-xs text-sidebar-foreground/60 truncate">
                   {user?.email}
@@ -168,10 +189,10 @@ const Dashboard: React.FC = () => {
       {/* Main Content */}
       <main className="flex-1 overflow-auto">
         {/* Header */}
-        <header className="h-16 border-b border-border flex items-center justify-between px-6 bg-card/50 sticky top-0 z-10">
+        <header className="h-16 border-b border-border flex items-center justify-between px-6 bg-card/50 backdrop-blur-lg sticky top-0 z-10">
           <div>
             <h1 className="text-xl font-semibold text-foreground">
-              {t.dashboard.welcome}، {user?.user_metadata?.full_name || t.dashboard.doctor}
+              {t.dashboard.welcome}، {doctorName}
             </h1>
             <p className="text-sm text-muted-foreground flex items-center gap-2">
               <Clock className="h-4 w-4" />
@@ -179,19 +200,12 @@ const Dashboard: React.FC = () => {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="relative">
-              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input 
-                placeholder={t.common.search + '...'}
-                className="ps-10 w-64"
-              />
-            </div>
             <LanguageSelector />
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
               <span className="absolute top-1 end-1 w-2 h-2 bg-destructive rounded-full" />
             </Button>
-            <Button variant="hero">
+            <Button variant="hero" onClick={() => setActiveSection('prescriptions')}>
               <Plus className="h-4 w-4 me-2" />
               {t.dashboard.newPrescription}
             </Button>
@@ -199,18 +213,19 @@ const Dashboard: React.FC = () => {
         </header>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-6 animate-fade-in">
           {activeSection === 'overview' && (
-            <>
+            <div className="space-y-6">
               {/* Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map((stat, index) => (
                   <div 
                     key={index}
-                    className="glass rounded-xl p-5 border border-border/30 hover:border-primary/30 transition-all hover:shadow-lg group"
+                    className="glass rounded-xl p-5 border border-border/30 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 group animate-fade-in"
+                    style={{ animationDelay: `${index * 100}ms` }}
                   >
                     <div className="flex items-center justify-between mb-3">
-                      <div className={`w-12 h-12 rounded-xl ${stat.bgColor} flex items-center justify-center`}>
+                      <div className={`w-12 h-12 rounded-xl ${stat.bgColor} flex items-center justify-center transition-transform group-hover:scale-110`}>
                         <stat.icon className={`h-6 w-6 ${stat.color}`} />
                       </div>
                       <TrendingUp className="h-4 w-4 text-success opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -222,25 +237,34 @@ const Dashboard: React.FC = () => {
               </div>
 
               {/* Quick Actions */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-                <button className="glass rounded-xl p-6 border border-border/30 hover:border-primary/50 transition-all text-start group">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <button 
+                  onClick={() => setActiveSection('prescriptions')}
+                  className="glass rounded-xl p-6 border border-border/30 hover:border-primary/50 transition-all duration-300 text-start group hover:-translate-y-1"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 group-hover:scale-110 transition-all">
                     <Plus className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="font-semibold text-foreground mb-1">{t.prescription.new}</h3>
                   <p className="text-sm text-muted-foreground">{t.dashboard.createNewPrescription}</p>
                 </button>
                 
-                <button className="glass rounded-xl p-6 border border-border/30 hover:border-info/50 transition-all text-start group">
-                  <div className="w-12 h-12 rounded-xl bg-info/10 flex items-center justify-center mb-4 group-hover:bg-info/20 transition-colors">
+                <button 
+                  onClick={() => setActiveSection('patients')}
+                  className="glass rounded-xl p-6 border border-border/30 hover:border-info/50 transition-all duration-300 text-start group hover:-translate-y-1"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-info/10 flex items-center justify-center mb-4 group-hover:bg-info/20 group-hover:scale-110 transition-all">
                     <Users className="h-6 w-6 text-info" />
                   </div>
                   <h3 className="font-semibold text-foreground mb-1">{t.patient.add}</h3>
                   <p className="text-sm text-muted-foreground">{t.dashboard.addNewPatient}</p>
                 </button>
                 
-                <button className="glass rounded-xl p-6 border border-border/30 hover:border-accent/50 transition-all text-start group">
-                  <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-4 group-hover:bg-accent/20 transition-colors">
+                <button 
+                  onClick={() => setActiveSection('templates')}
+                  className="glass rounded-xl p-6 border border-border/30 hover:border-accent/50 transition-all duration-300 text-start group hover:-translate-y-1"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-4 group-hover:bg-accent/20 group-hover:scale-110 transition-all">
                     <LayoutTemplate className="h-6 w-6 text-accent" />
                   </div>
                   <h3 className="font-semibold text-foreground mb-1">{t.dashboard.newTemplate}</h3>
@@ -254,176 +278,131 @@ const Dashboard: React.FC = () => {
                 <div className="glass rounded-xl border border-border/30 p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-foreground">{t.dashboard.recentPatients}</h3>
-                    <Button variant="ghost" size="sm" className="text-primary">
+                    <Button variant="ghost" size="sm" className="text-primary" onClick={() => setActiveSection('patients')}>
                       {t.dashboard.viewAll}
                     </Button>
                   </div>
-                  <div className="text-center py-8 text-muted-foreground">
-                    <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>{t.patient.noPatients}</p>
-                    <Button variant="outline" className="mt-4">
-                      <Plus className="h-4 w-4 me-2" />
-                      {t.patient.add}
-                    </Button>
-                  </div>
+                  {patients.length > 0 ? (
+                    <div className="space-y-3">
+                      {patients.slice(0, 5).map((patient) => (
+                        <div key={patient.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                          <div className="w-10 h-10 rounded-full bg-info/20 flex items-center justify-center">
+                            <User className="h-5 w-5 text-info" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-foreground truncate">{patient.full_name}</p>
+                            <p className="text-xs text-muted-foreground">{patient.phone || '---'}</p>
+                          </div>
+                          {patient.gender && (
+                            <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+                              {patient.gender === 'male' ? t.patient.male : t.patient.female}
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>{t.patient.noPatients}</p>
+                      <Button variant="outline" className="mt-4" onClick={() => setActiveSection('patients')}>
+                        <Plus className="h-4 w-4 me-2" />
+                        {t.patient.add}
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Recent Prescriptions */}
                 <div className="glass rounded-xl border border-border/30 p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-foreground">{t.dashboard.recentPrescriptions}</h3>
-                    <Button variant="ghost" size="sm" className="text-primary">
+                    <Button variant="ghost" size="sm" className="text-primary" onClick={() => setActiveSection('prescriptions')}>
                       {t.dashboard.viewAll}
                     </Button>
                   </div>
-                  <div className="text-center py-8 text-muted-foreground">
-                    <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>{t.common.noData}</p>
-                    <Button variant="outline" className="mt-4">
-                      <Plus className="h-4 w-4 me-2" />
-                      {t.prescription.new}
-                    </Button>
-                  </div>
+                  {prescriptions.length > 0 ? (
+                    <div className="space-y-3">
+                      {prescriptions.slice(0, 5).map((prescription) => (
+                        <div key={prescription.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                            <FileText className="h-5 w-5 text-primary" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-foreground truncate">
+                              {prescription.patient?.full_name || t.common.noData}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {new Date(prescription.created_at || '').toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US')}
+                            </p>
+                          </div>
+                          <span className="text-xs px-2 py-1 rounded-full bg-success/10 text-success">
+                            {prescription.medications?.length || 0} {t.prescription.medications}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>{t.common.noData}</p>
+                      <Button variant="outline" className="mt-4" onClick={() => setActiveSection('prescriptions')}>
+                        <Plus className="h-4 w-4 me-2" />
+                        {t.prescription.new}
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* Doctor Info Card */}
-              <div className="mt-6 glass rounded-xl border border-border/30 p-6">
+              <div className="glass rounded-xl border border-border/30 p-6">
                 <div className="flex items-start gap-6 flex-wrap md:flex-nowrap">
                   <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center flex-shrink-0">
                     <Stethoscope className="h-10 w-10 text-primary-foreground" />
                   </div>
                   <div className="flex-1">
                     <h3 className="text-xl font-bold text-foreground mb-1">
-                      {user?.user_metadata?.full_name || t.settings.fullName}
+                      {doctorName}
                     </h3>
-                    <p className="text-muted-foreground mb-4">{t.dashboard.generalDoctor}</p>
+                    <p className="text-muted-foreground mb-4">{profile?.specialty || t.dashboard.generalDoctor}</p>
                     <div className="flex flex-wrap gap-4 text-sm">
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <Building2 className="h-4 w-4" />
-                        <span>{t.dashboard.clinic}</span>
+                        <span>{clinicName}</span>
                       </div>
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <FileText className="h-4 w-4" />
-                        <span>{t.dashboard.licenseNumber}: ---</span>
+                        <span>{t.dashboard.licenseNumber}: {profile?.license_number || '---'}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Activity className="h-4 w-4" />
+                        <span>{prescriptions.length} {t.dashboard.prescriptions}</span>
                       </div>
                     </div>
                   </div>
-                  <Button variant="outline">
+                  <Button variant="outline" onClick={() => setActiveSection('settings')}>
                     {t.dashboard.editProfile}
                   </Button>
                 </div>
               </div>
-            </>
+            </div>
           )}
 
           {activeSection === 'patients' && (
-            <div className="glass rounded-xl border border-border/30 p-6">
-              <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-                <h2 className="text-2xl font-bold text-foreground">{t.dashboard.patients}</h2>
-                <Button variant="hero">
-                  <Plus className="h-4 w-4 me-2" />
-                  {t.patient.add}
-                </Button>
-              </div>
-              <div className="mb-4">
-                <div className="relative max-w-md">
-                  <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder={t.patient.search} className="ps-10" />
-                </div>
-              </div>
-              <div className="text-center py-16 text-muted-foreground">
-                <Users className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                <p className="text-lg">{t.patient.noPatients}</p>
-                <p className="text-sm mt-2">{t.dashboard.startAddPatient}</p>
-              </div>
-            </div>
+            <PatientsList onCreatePrescription={() => setActiveSection('prescriptions')} />
           )}
 
           {activeSection === 'prescriptions' && (
-            <div className="glass rounded-xl border border-border/30 p-6">
-              <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-                <h2 className="text-2xl font-bold text-foreground">{t.dashboard.prescriptions}</h2>
-                <Button variant="hero">
-                  <Plus className="h-4 w-4 me-2" />
-                  {t.prescription.new}
-                </Button>
-              </div>
-              <div className="text-center py-16 text-muted-foreground">
-                <FileText className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                <p className="text-lg">{t.common.noData}</p>
-                <p className="text-sm mt-2">{t.dashboard.startCreatePrescription}</p>
-              </div>
-            </div>
+            <PrescriptionsList />
           )}
 
           {activeSection === 'templates' && (
-            <div className="glass rounded-xl border border-border/30 p-6">
-              <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-                <h2 className="text-2xl font-bold text-foreground">{t.dashboard.templates}</h2>
-                <Button variant="hero">
-                  <Plus className="h-4 w-4 me-2" />
-                  {t.dashboard.newTemplate}
-                </Button>
-              </div>
-              <div className="text-center py-16 text-muted-foreground">
-                <LayoutTemplate className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                <p className="text-lg">{t.dashboard.noTemplates}</p>
-                <p className="text-sm mt-2">{t.dashboard.createTemplatesHint}</p>
-              </div>
-            </div>
+            <TemplatesList />
           )}
 
           {activeSection === 'settings' && (
-            <div className="glass rounded-xl border border-border/30 p-6">
-              <h2 className="text-2xl font-bold text-foreground mb-6">{t.dashboard.settings}</h2>
-              <div className="space-y-6">
-                <div className="border-b border-border pb-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">{t.settings.doctorInfo}</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm text-muted-foreground mb-2">{t.settings.fullName}</label>
-                      <Input defaultValue={user?.user_metadata?.full_name || ''} />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-muted-foreground mb-2">{t.settings.specialty}</label>
-                      <Input placeholder={t.dashboard.generalDoctor} />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-muted-foreground mb-2">{t.settings.licenseNumber}</label>
-                      <Input placeholder={t.settings.licenseNumber} />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-muted-foreground mb-2">{t.settings.phone}</label>
-                      <Input placeholder="+966 50 000 0000" />
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="border-b border-border pb-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">{t.settings.clinicInfo}</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm text-muted-foreground mb-2">{t.settings.clinicName}</label>
-                      <Input placeholder={t.settings.clinicName} />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-muted-foreground mb-2">{t.settings.address}</label>
-                      <Input placeholder={t.settings.address} />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm text-muted-foreground mb-2">{t.settings.prescriptionFooter}</label>
-                      <Input placeholder={t.settings.prescriptionFooterHint} />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex justify-end gap-3">
-                  <Button variant="outline">{t.common.cancel}</Button>
-                  <Button variant="hero">{t.common.save}</Button>
-                </div>
-              </div>
-            </div>
+            <SettingsPanel />
           )}
         </div>
       </main>
