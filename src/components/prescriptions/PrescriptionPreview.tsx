@@ -167,8 +167,18 @@ export const PrescriptionPreview: React.FC<PrescriptionPreviewProps> = ({
         <div ref={printRef} className="bg-white text-black p-6 rounded-lg">
           {/* Header */}
           <div className="prescription-header text-center border-b-2 border-primary pb-4 mb-6">
+            {/* Clinic Logo */}
+            {tenant?.logo_url && (
+              <div className="mb-3">
+                <img 
+                  src={tenant.logo_url} 
+                  alt="Clinic Logo" 
+                  className="h-16 mx-auto object-contain"
+                />
+              </div>
+            )}
             <div className="flex items-center justify-center gap-3 mb-2">
-              <Stethoscope className="h-8 w-8 text-primary" />
+              {!tenant?.logo_url && <Stethoscope className="h-8 w-8 text-primary" />}
               <div className="doctor-name text-2xl font-bold text-primary">
                 {language === 'ar' ? 'د.' : 'Dr.'} {profile?.full_name || ''}
               </div>
