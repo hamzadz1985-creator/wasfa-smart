@@ -45,11 +45,13 @@ import { toast } from '@/hooks/use-toast';
 interface PatientsListProps {
   onSelectPatient?: (patient: Patient) => void;
   onCreatePrescription?: (patient: Patient) => void;
+  onViewPatient?: (patient: Patient) => void;
 }
 
 export const PatientsList: React.FC<PatientsListProps> = ({ 
   onSelectPatient,
-  onCreatePrescription 
+  onCreatePrescription,
+  onViewPatient
 }) => {
   const { t, dir, language } = useLanguage();
   const { patients, loading, addPatient, updatePatient, archivePatient, searchPatients } = usePatients();
@@ -185,7 +187,7 @@ export const PatientsList: React.FC<PatientsListProps> = ({
                 <TableRow 
                   key={patient.id}
                   className="cursor-pointer hover:bg-muted/30 transition-colors"
-                  onClick={() => onSelectPatient?.(patient)}
+                  onClick={() => onViewPatient?.(patient)}
                 >
                   <TableCell className="font-medium">
                     <div className="flex items-center gap-3">
