@@ -5,10 +5,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { PatientsList } from '@/components/patients/PatientsList';
+import { PatientDetails } from '@/components/patients/PatientDetails';
 import { PrescriptionsList } from '@/components/prescriptions/PrescriptionsList';
 import { TemplatesList } from '@/components/templates/TemplatesList';
 import { SettingsPanel } from '@/components/settings/SettingsPanel';
-import { usePatients } from '@/hooks/usePatients';
+import { usePatients, Patient } from '@/hooks/usePatients';
 import { usePrescriptions } from '@/hooks/usePrescriptions';
 import { useTemplates } from '@/hooks/useTemplates';
 import { useProfile } from '@/hooks/useProfile';
@@ -32,7 +33,7 @@ import {
   Activity
 } from 'lucide-react';
 
-type ActiveSection = 'overview' | 'patients' | 'prescriptions' | 'templates' | 'settings';
+type ActiveSection = 'overview' | 'patients' | 'prescriptions' | 'templates' | 'settings' | 'patient-details';
 
 const Dashboard: React.FC = () => {
   const { t, dir, language } = useLanguage();
@@ -40,6 +41,7 @@ const Dashboard: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [activeSection, setActiveSection] = useState<ActiveSection>('overview');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
 
   const { patients } = usePatients();
   const { prescriptions } = usePrescriptions();
@@ -390,7 +392,24 @@ const Dashboard: React.FC = () => {
           )}
 
           {activeSection === 'patients' && (
-            <PatientsList onCreatePrescription={() => setActiveSection('prescriptions')} />
+            <PatientsList 
+              onCreatePrescription={() => setActiveSection('prescriptions')}
+              onViewPatient={(patient) => {
+                setSelectedPatient(patient);
+                setActiveSection('patient-details');
+              }}
+            />
+          )}
+
+          {activeSection === 'patient-details' && selectedPatient && (
+            <PatientDetails
+              patient={selectedPatient}
+              onBack={() => {
+                setSelectedPatient(null);
+                setActiveSection('patients');
+              }}
+              onCreatePrescription={() => setActiveSection('prescriptions')}
+            />
           )}
 
           {activeSection === 'prescriptions' && (
