@@ -21,6 +21,8 @@ import { Plus, Trash2, GripVertical } from 'lucide-react';
 import { Patient } from '@/hooks/usePatients';
 import { Medication } from '@/hooks/usePrescriptions';
 import { toast } from '@/hooks/use-toast';
+import { MedicationAutocomplete } from './MedicationAutocomplete';
+import { useFavoriteMedications, FavoriteMedication } from '@/hooks/useFavoriteMedications';
 
 interface PrescriptionDialogProps {
   open: boolean;
@@ -56,6 +58,7 @@ export const PrescriptionDialog: React.FC<PrescriptionDialogProps> = ({
   selectedPatient,
 }) => {
   const { t, dir, language } = useLanguage();
+  const { favorites, addFavorite } = useFavoriteMedications();
   const [loading, setLoading] = useState(false);
   const [patientId, setPatientId] = useState(selectedPatient?.id || '');
   const [notes, setNotes] = useState('');
@@ -103,6 +106,54 @@ export const PrescriptionDialog: React.FC<PrescriptionDialogProps> = ({
     const updated = [...medications];
     (updated[index] as any)[field] = value;
     setMedications(updated);
+  };
+
+  const handleSelectFavorite = (index: number, favorite: FavoriteMedication) => {
+    const updated = [...medications];
+    updated[index] = {
+      medication_name: favorite.medication_name,
+      dosage: favorite.dosage || '',
+      form: favorite.form || '',
+      frequency: favorite.frequency || '',
+      duration: favorite.duration || '',
+      notes: '',
+      sort_order: index,
+    };
+    setMedications(updated);
+  };
+
+  const handleAddToFavorites = async (index: number) => {
+    const med = medications[index];
+    if (!med.medication_name.trim()) return;
+
+    const { error } = await addFavorite({
+      medication_name: med.medication_name,
+      dosage: med.dosage || null,
+      form: med.form || null,
+      frequency: med.frequency || null,
+      duration: med.duration || null,
+    });
+
+    if (error) {
+      toast({
+        title: t.common.error,
+        description: error.message,
+        variant: 'destructive',
+      });
+    } else {
+      toast({
+        title: t.common.success,
+        description: language === 'ar' ? 'تمت الإضافة للمفضلة' : 
+                     language === 'fr' ? 'Ajouté aux favoris' : 
+                     'Added to favorites',
+      });
+    }
+  };
+
+  const isMedicationFavorite = (medicationName: string) => {
+    return favorites.some(f => 
+      f.medication_name.toLowerCase() === medicationName.toLowerCase()
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -221,13 +272,18 @@ export const PrescriptionDialog: React.FC<PrescriptionDialogProps> = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div className="md:col-span-2">
                       <Label htmlFor={`med-name-${index}`}>{t.prescription.medicationName} *</Label>
-                      <Input
-                        id={`med-name-${index}`}
-                        value={med.medication_name}
-                        onChange={(e) => updateMedication(index, 'medication_name', e.target.value)}
-                        className="mt-1"
-                        placeholder={t.prescription.medicationName}
-                      />
+                      <div className="mt-1">
+                        <MedicationAutocomplete
+                          id={`med-name-${index}`}
+                          value={med.medication_name}
+                          onChange={(value) => updateMedication(index, 'medication_name', value)}
+                          onSelectFavorite={(fav) => handleSelectFavorite(index, fav)}
+                          favorites={favorites}
+                          onAddToFavorites={() => handleAddToFavorites(index)}
+                          isFavorite={isMedicationFavorite(med.medication_name)}
+                          placeholder={t.prescription.medicationName}
+                        />
+                      </div>
                     </div>
 
                     <div>
