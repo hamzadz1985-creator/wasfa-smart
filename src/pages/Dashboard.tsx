@@ -9,6 +9,7 @@ import { PatientDetails } from '@/components/patients/PatientDetails';
 import { PrescriptionsList } from '@/components/prescriptions/PrescriptionsList';
 import { TemplatesList } from '@/components/templates/TemplatesList';
 import { SettingsPanel } from '@/components/settings/SettingsPanel';
+import { StatisticsSection } from '@/components/dashboard/StatisticsSection';
 import { usePatients, Patient } from '@/hooks/usePatients';
 import { usePrescriptions } from '@/hooks/usePrescriptions';
 import { useTemplates } from '@/hooks/useTemplates';
@@ -30,10 +31,11 @@ import {
   User,
   Stethoscope,
   Building2,
-  Activity
+  Activity,
+  BarChart3
 } from 'lucide-react';
 
-type ActiveSection = 'overview' | 'patients' | 'prescriptions' | 'templates' | 'settings' | 'patient-details';
+type ActiveSection = 'overview' | 'patients' | 'prescriptions' | 'templates' | 'settings' | 'patient-details' | 'statistics';
 
 const Dashboard: React.FC = () => {
   const { t, dir, language } = useLanguage();
@@ -90,6 +92,7 @@ const Dashboard: React.FC = () => {
 
   const menuItems = [
     { icon: LayoutDashboard, label: t.dashboard.overview, key: 'overview' as ActiveSection },
+    { icon: BarChart3, label: t.dashboard.statistics, key: 'statistics' as ActiveSection },
     { icon: Users, label: t.dashboard.patients, key: 'patients' as ActiveSection },
     { icon: FileText, label: t.dashboard.prescriptions, key: 'prescriptions' as ActiveSection },
     { icon: LayoutTemplate, label: t.dashboard.templates, key: 'templates' as ActiveSection },
@@ -422,6 +425,10 @@ const Dashboard: React.FC = () => {
 
           {activeSection === 'settings' && (
             <SettingsPanel />
+          )}
+
+          {activeSection === 'statistics' && (
+            <StatisticsSection prescriptions={prescriptions} patients={patients} />
           )}
         </div>
       </main>
