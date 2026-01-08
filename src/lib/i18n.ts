@@ -139,6 +139,19 @@ export const translations = {
       unexpectedError: 'Une erreur inattendue s\'est produite',
       createAccountSubtitle: 'Créez votre compte pour commencer',
       loginSubtitle: 'Connectez-vous à votre compte',
+      resetEmailSent: 'Lien de réinitialisation envoyé',
+      checkEmail: 'Vérifiez votre email',
+      resetEmailSentDescription: 'Un lien de réinitialisation a été envoyé à votre adresse email',
+      backToLogin: 'Retour à la connexion',
+      forgotPasswordSubtitle: 'Entrez votre email pour réinitialiser votre mot de passe',
+      sendResetLink: 'Envoyer le lien',
+      rememberPassword: 'Vous vous souvenez de votre mot de passe ?',
+      passwordResetSuccess: 'Mot de passe modifié avec succès',
+      passwordChanged: 'Mot de passe modifié',
+      passwordChangedDescription: 'Vous pouvez maintenant vous connecter avec votre nouveau mot de passe',
+      resetPassword: 'Réinitialiser le mot de passe',
+      resetPasswordSubtitle: 'Entrez votre nouveau mot de passe',
+      changePassword: 'Changer le mot de passe',
     },
     // Dashboard
     dashboard: {
@@ -172,6 +185,10 @@ export const translations = {
       createTemplatesHint: 'Créez des modèles pour les prescriptions récurrentes',
       startAddPatient: 'Commencez par ajouter un patient',
       startCreatePrescription: 'Commencez par créer une ordonnance',
+      favorites: 'Médicaments favoris',
+      favoritesDescription: 'Gérez votre liste de médicaments favoris pour une utilisation rapide',
+      noFavorites: 'Aucun médicament favori',
+      addFavoritesHint: 'Ajoutez vos médicaments fréquemment utilisés pour gagner du temps',
     },
     // Patients
     patient: {
@@ -389,6 +406,19 @@ export const translations = {
       unexpectedError: 'حدث خطأ غير متوقع',
       createAccountSubtitle: 'أنشئ حسابك للبدء',
       loginSubtitle: 'سجل دخولك إلى حسابك',
+      resetEmailSent: 'تم إرسال رابط إعادة التعيين',
+      checkEmail: 'تحقق من بريدك الإلكتروني',
+      resetEmailSentDescription: 'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني',
+      backToLogin: 'العودة لتسجيل الدخول',
+      forgotPasswordSubtitle: 'أدخل بريدك الإلكتروني لإعادة تعيين كلمة المرور',
+      sendResetLink: 'إرسال رابط إعادة التعيين',
+      rememberPassword: 'تتذكر كلمة المرور؟',
+      passwordResetSuccess: 'تم تغيير كلمة المرور بنجاح',
+      passwordChanged: 'تم تغيير كلمة المرور',
+      passwordChangedDescription: 'يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة',
+      resetPassword: 'إعادة تعيين كلمة المرور',
+      resetPasswordSubtitle: 'أدخل كلمة المرور الجديدة',
+      changePassword: 'تغيير كلمة المرور',
     },
     // Dashboard
     dashboard: {
@@ -422,6 +452,10 @@ export const translations = {
       createTemplatesHint: 'أنشئ قوالب للوصفات المتكررة',
       startAddPatient: 'ابدأ بإضافة مريض جديد',
       startCreatePrescription: 'ابدأ بإنشاء وصفة طبية جديدة',
+      favorites: 'الأدوية المفضلة',
+      favoritesDescription: 'إدارة قائمة الأدوية المفضلة لاستخدامها بسرعة في الوصفات',
+      noFavorites: 'لا توجد أدوية مفضلة',
+      addFavoritesHint: 'أضف أدويتك المستخدمة بشكل متكرر لتوفير الوقت',
     },
     // Patients
     patient: {
@@ -639,6 +673,19 @@ export const translations = {
       unexpectedError: 'An unexpected error occurred',
       createAccountSubtitle: 'Create your account to get started',
       loginSubtitle: 'Sign in to your account',
+      resetEmailSent: 'Reset link sent',
+      checkEmail: 'Check your email',
+      resetEmailSentDescription: 'A password reset link has been sent to your email',
+      backToLogin: 'Back to login',
+      forgotPasswordSubtitle: 'Enter your email to reset your password',
+      sendResetLink: 'Send reset link',
+      rememberPassword: 'Remember your password?',
+      passwordResetSuccess: 'Password changed successfully',
+      passwordChanged: 'Password changed',
+      passwordChangedDescription: 'You can now login with your new password',
+      resetPassword: 'Reset password',
+      resetPasswordSubtitle: 'Enter your new password',
+      changePassword: 'Change password',
     },
     // Dashboard
     dashboard: {
@@ -672,6 +719,10 @@ export const translations = {
       createTemplatesHint: 'Create templates for recurring prescriptions',
       startAddPatient: 'Start by adding a patient',
       startCreatePrescription: 'Start by creating a prescription',
+      favorites: 'Favorite Medications',
+      favoritesDescription: 'Manage your favorite medications list for quick use',
+      noFavorites: 'No favorite medications',
+      addFavoritesHint: 'Add your frequently used medications to save time',
     },
     // Patients
     patient: {
