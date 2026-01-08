@@ -238,9 +238,9 @@ const Auth: React.FC = () => {
 
             {!isSignup && (
               <div className="text-start">
-                <a href="#" className="text-sm text-primary hover:underline">
+                <Link to="/forgot-password" className="text-sm text-primary hover:underline">
                   {t.auth.forgotPassword}
-                </a>
+                </Link>
               </div>
             )}
 

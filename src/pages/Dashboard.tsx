@@ -10,6 +10,7 @@ import { PrescriptionsList } from '@/components/prescriptions/PrescriptionsList'
 import { TemplatesList } from '@/components/templates/TemplatesList';
 import { SettingsPanel } from '@/components/settings/SettingsPanel';
 import { StatisticsSection } from '@/components/dashboard/StatisticsSection';
+import { FavoriteMedicationsList } from '@/components/medications/FavoriteMedicationsList';
 import { usePatients, Patient } from '@/hooks/usePatients';
 import { usePrescriptions } from '@/hooks/usePrescriptions';
 import { useTemplates } from '@/hooks/useTemplates';
@@ -32,10 +33,11 @@ import {
   Stethoscope,
   Building2,
   Activity,
-  BarChart3
+  BarChart3,
+  Star
 } from 'lucide-react';
 
-type ActiveSection = 'overview' | 'patients' | 'prescriptions' | 'templates' | 'settings' | 'patient-details' | 'statistics';
+type ActiveSection = 'overview' | 'patients' | 'prescriptions' | 'templates' | 'settings' | 'patient-details' | 'statistics' | 'favorites';
 
 const Dashboard: React.FC = () => {
   const { t, dir, language } = useLanguage();
@@ -96,6 +98,7 @@ const Dashboard: React.FC = () => {
     { icon: Users, label: t.dashboard.patients, key: 'patients' as ActiveSection },
     { icon: FileText, label: t.dashboard.prescriptions, key: 'prescriptions' as ActiveSection },
     { icon: LayoutTemplate, label: t.dashboard.templates, key: 'templates' as ActiveSection },
+    { icon: Star, label: t.dashboard.favorites, key: 'favorites' as ActiveSection },
     { icon: Settings, label: t.dashboard.settings, key: 'settings' as ActiveSection },
   ];
 
@@ -429,6 +432,10 @@ const Dashboard: React.FC = () => {
 
           {activeSection === 'statistics' && (
             <StatisticsSection prescriptions={prescriptions} patients={patients} />
+          )}
+
+          {activeSection === 'favorites' && (
+            <FavoriteMedicationsList />
           )}
         </div>
       </main>
