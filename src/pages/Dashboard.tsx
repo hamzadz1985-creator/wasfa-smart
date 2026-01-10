@@ -14,6 +14,8 @@ import { FavoriteMedicationsList } from '@/components/medications/FavoriteMedica
 import { SubscriptionBanner } from '@/components/dashboard/SubscriptionBanner';
 import { WelcomeCard } from '@/components/dashboard/WelcomeCard';
 import { RoleBadge } from '@/components/dashboard/RoleBadge';
+import { ExportReports } from '@/components/dashboard/ExportReports';
+import { NotificationsPanel } from '@/components/dashboard/NotificationsPanel';
 import { usePatients, Patient } from '@/hooks/usePatients';
 import { usePrescriptions } from '@/hooks/usePrescriptions';
 import { useTemplates } from '@/hooks/useTemplates';
@@ -469,7 +471,13 @@ const Dashboard: React.FC = () => {
           )}
 
           {activeSection === 'statistics' && (
-            <StatisticsSection prescriptions={prescriptions} patients={patients} />
+            <div className="space-y-6">
+              <StatisticsSection prescriptions={prescriptions} patients={patients} />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <ExportReports prescriptions={prescriptions} patients={patients} />
+                <NotificationsPanel patients={patients} prescriptions={prescriptions} />
+              </div>
+            </div>
           )}
 
           {activeSection === 'favorites' && (
