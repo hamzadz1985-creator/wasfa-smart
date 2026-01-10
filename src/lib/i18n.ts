@@ -242,6 +242,24 @@ export const translations = {
       prescriptionFooter: 'Note de prescription (pied de page)',
       prescriptionFooterHint: 'Texte affiché en bas de la prescription',
     },
+    // Subscription
+    subscription: {
+      trialDaysRemaining: 'Jours restants dans l\'essai',
+      trialExpired: 'La période d\'essai a expiré',
+      subscriptionExpired: 'Votre abonnement a expiré',
+      subscriptionSuspended: 'Votre compte est suspendu',
+      upgradeNow: 'Mettre à niveau',
+      contactSupport: 'Contacter le support',
+      cannotCreatePrescription: 'Vous ne pouvez pas créer de prescriptions. Veuillez mettre à niveau votre abonnement.',
+    },
+    // Roles
+    roles: {
+      superAdmin: 'Super Admin',
+      clinicAdmin: 'Admin Clinique',
+      doctor: 'Médecin',
+      assistant: 'Assistant',
+      noPermission: 'Vous n\'avez pas la permission pour cette action',
+    },
     // Footer
     footer: {
       description: 'La solution professionnelle pour la gestion des ordonnances médicales. Sécurisée, intuitive et conforme aux normes.',
@@ -509,6 +527,24 @@ export const translations = {
       prescriptionFooter: 'ملاحظة الوصفة (تذييل)',
       prescriptionFooterHint: 'نص يظهر في أسفل الوصفة',
     },
+    // Subscription
+    subscription: {
+      trialDaysRemaining: 'أيام متبقية في الفترة التجريبية',
+      trialExpired: 'انتهت الفترة التجريبية',
+      subscriptionExpired: 'انتهى اشتراكك',
+      subscriptionSuspended: 'تم تعليق حسابك',
+      upgradeNow: 'ترقية الآن',
+      contactSupport: 'تواصل مع الدعم',
+      cannotCreatePrescription: 'لا يمكنك إنشاء وصفات. يرجى ترقية اشتراكك.',
+    },
+    // Roles
+    roles: {
+      superAdmin: 'مدير النظام',
+      clinicAdmin: 'مدير العيادة',
+      doctor: 'طبيب',
+      assistant: 'مساعد',
+      noPermission: 'ليس لديك صلاحية لهذا الإجراء',
+    },
     // Footer
     footer: {
       description: 'الحل الاحترافي لإدارة الوصفات الطبية. آمن وسهل الاستخدام ومتوافق مع المعايير الصحية.',
@@ -775,6 +811,24 @@ export const translations = {
       address: 'Address',
       prescriptionFooter: 'Prescription Note (Footer)',
       prescriptionFooterHint: 'Text displayed at the bottom of the prescription',
+    },
+    // Subscription
+    subscription: {
+      trialDaysRemaining: 'days remaining in trial',
+      trialExpired: 'Trial period has expired',
+      subscriptionExpired: 'Your subscription has expired',
+      subscriptionSuspended: 'Your account is suspended',
+      upgradeNow: 'Upgrade Now',
+      contactSupport: 'Contact Support',
+      cannotCreatePrescription: 'You cannot create prescriptions. Please upgrade your subscription.',
+    },
+    // Roles
+    roles: {
+      superAdmin: 'Super Admin',
+      clinicAdmin: 'Clinic Admin',
+      doctor: 'Doctor',
+      assistant: 'Assistant',
+      noPermission: 'You do not have permission for this action',
     },
     // Footer
     footer: {

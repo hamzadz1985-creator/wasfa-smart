@@ -11,10 +11,16 @@ import { TemplatesList } from '@/components/templates/TemplatesList';
 import { SettingsPanel } from '@/components/settings/SettingsPanel';
 import { StatisticsSection } from '@/components/dashboard/StatisticsSection';
 import { FavoriteMedicationsList } from '@/components/medications/FavoriteMedicationsList';
+import { SubscriptionBanner } from '@/components/dashboard/SubscriptionBanner';
+import { WelcomeCard } from '@/components/dashboard/WelcomeCard';
+import { RoleBadge } from '@/components/dashboard/RoleBadge';
 import { usePatients, Patient } from '@/hooks/usePatients';
 import { usePrescriptions } from '@/hooks/usePrescriptions';
 import { useTemplates } from '@/hooks/useTemplates';
 import { useProfile } from '@/hooks/useProfile';
+import { useSubscription } from '@/hooks/useSubscription';
+import { useUserRole } from '@/hooks/useUserRole';
+import { toast } from '@/hooks/use-toast';
 import { 
   LayoutDashboard, 
   Users, 
@@ -51,6 +57,8 @@ const Dashboard: React.FC = () => {
   const { prescriptions } = usePrescriptions();
   const { templates } = useTemplates();
   const { profile, tenant } = useProfile();
+  const { canCreatePrescription, canManageTemplates, canViewStatistics } = useUserRole();
+  const { isActive: isSubscriptionActive, canCreatePrescription: subscriptionAllowsPrescription } = useSubscription();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -176,9 +184,7 @@ const Dashboard: React.FC = () => {
                 <p className="text-sm font-medium text-sidebar-foreground truncate">
                   {doctorName}
                 </p>
-                <p className="text-xs text-sidebar-foreground/60 truncate">
-                  {user?.email}
-                </p>
+                <RoleBadge />
               </div>
             </div>
           )}
@@ -213,7 +219,28 @@ const Dashboard: React.FC = () => {
               <Bell className="h-5 w-5" />
               <span className="absolute top-1 end-1 w-2 h-2 bg-destructive rounded-full" />
             </Button>
-            <Button variant="hero" onClick={() => setActiveSection('prescriptions')}>
+            <Button 
+              variant="hero" 
+              onClick={() => {
+                if (!subscriptionAllowsPrescription) {
+                  toast({
+                    title: t.common.error,
+                    description: (t as any).subscription?.cannotCreatePrescription || 'Subscription required',
+                    variant: 'destructive',
+                  });
+                  return;
+                }
+                if (!canCreatePrescription) {
+                  toast({
+                    title: t.common.error,
+                    description: (t as any).roles?.noPermission || 'No permission',
+                    variant: 'destructive',
+                  });
+                  return;
+                }
+                setActiveSection('prescriptions');
+              }}
+            >
               <Plus className="h-4 w-4 me-2" />
               {t.dashboard.newPrescription}
             </Button>
@@ -222,8 +249,19 @@ const Dashboard: React.FC = () => {
 
         {/* Content */}
         <div className="p-6 animate-fade-in">
+          {/* Subscription Banner */}
+          <SubscriptionBanner />
+          
           {activeSection === 'overview' && (
             <div className="space-y-6">
+              {/* Welcome Onboarding */}
+              <WelcomeCard
+                onNavigate={(section) => setActiveSection(section as ActiveSection)}
+                patientsCount={patients.length}
+                prescriptionsCount={prescriptions.length}
+                templatesCount={templates.length}
+                hasSettings={!!(profile?.specialty || profile?.license_number)}
+              />
               {/* Stats */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map((stat, index) => (

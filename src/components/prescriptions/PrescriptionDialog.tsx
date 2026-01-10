@@ -17,12 +17,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Plus, Trash2, GripVertical } from 'lucide-react';
+import { Plus, Trash2, GripVertical, AlertTriangle } from 'lucide-react';
 import { Patient } from '@/hooks/usePatients';
 import { Medication } from '@/hooks/usePrescriptions';
 import { toast } from '@/hooks/use-toast';
 import { MedicationAutocomplete } from './MedicationAutocomplete';
 import { useFavoriteMedications, FavoriteMedication } from '@/hooks/useFavoriteMedications';
+import { useSubscription } from '@/hooks/useSubscription';
+import { useUserRole } from '@/hooks/useUserRole';
 
 interface PrescriptionDialogProps {
   open: boolean;
@@ -59,12 +61,17 @@ export const PrescriptionDialog: React.FC<PrescriptionDialogProps> = ({
 }) => {
   const { t, dir, language } = useLanguage();
   const { favorites, addFavorite } = useFavoriteMedications();
+  const { canCreatePrescription: subscriptionAllows } = useSubscription();
+  const { canCreatePrescription: roleAllows } = useUserRole();
   const [loading, setLoading] = useState(false);
   const [patientId, setPatientId] = useState(selectedPatient?.id || '');
   const [notes, setNotes] = useState('');
   const [medications, setMedications] = useState<Omit<Medication, 'id' | 'prescription_id'>[]>([
     emptyMedication()
   ]);
+
+  // Check if user can create prescriptions
+  const canCreate = subscriptionAllows && roleAllows;
 
   const getFormLabel = (form: string) => {
     const labels: Record<string, Record<string, string>> = {
@@ -159,6 +166,22 @@ export const PrescriptionDialog: React.FC<PrescriptionDialogProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Check permissions first
+    if (!canCreate) {
+      toast({
+        title: t.common.error,
+        description: !subscriptionAllows 
+          ? (language === 'ar' ? 'لا يمكنك إنشاء وصفات. يرجى ترقية اشتراكك.' : 
+             language === 'fr' ? 'Vous ne pouvez pas créer de prescriptions.' : 
+             'You cannot create prescriptions. Please upgrade.')
+          : (language === 'ar' ? 'ليس لديك صلاحية لهذا الإجراء' : 
+             language === 'fr' ? 'Vous n\'avez pas la permission' : 
+             'You do not have permission'),
+        variant: 'destructive',
+      });
+      return;
+    }
+
     if (!patientId) {
       toast({
         title: t.common.error,
@@ -212,6 +235,22 @@ export const PrescriptionDialog: React.FC<PrescriptionDialogProps> = ({
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">{t.prescription.new}</DialogTitle>
         </DialogHeader>
+
+        {/* Show warning if cannot create */}
+        {!canCreate && (
+          <div className="flex items-center gap-3 p-4 bg-destructive/10 border border-destructive/30 rounded-lg text-destructive">
+            <AlertTriangle className="h-5 w-5 flex-shrink-0" />
+            <p className="text-sm">
+              {!subscriptionAllows 
+                ? (language === 'ar' ? 'لا يمكنك إنشاء وصفات. يرجى ترقية اشتراكك.' : 
+                   language === 'fr' ? 'Vous ne pouvez pas créer de prescriptions. Veuillez mettre à niveau.' : 
+                   'You cannot create prescriptions. Please upgrade your subscription.')
+                : (language === 'ar' ? 'ليس لديك صلاحية لإنشاء الوصفات' : 
+                   language === 'fr' ? 'Vous n\'avez pas la permission de créer des prescriptions' : 
+                   'You do not have permission to create prescriptions')}
+            </p>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6 mt-4">
           {/* Patient Selection */}
@@ -384,7 +423,7 @@ export const PrescriptionDialog: React.FC<PrescriptionDialogProps> = ({
             >
               {t.common.cancel}
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading || !canCreate}>
               {loading ? t.common.loading : t.prescription.save}
             </Button>
           </div>
