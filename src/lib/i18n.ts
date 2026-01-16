@@ -260,6 +260,23 @@ export const translations = {
       assistant: 'Assistant',
       noPermission: 'Vous n\'avez pas la permission pour cette action',
     },
+    // Users Management
+    users: {
+      teamManagement: 'Gestion de l\'équipe',
+      manageTeamDescription: 'Gérez les membres de votre équipe et leurs rôles',
+      inviteUser: 'Inviter un utilisateur',
+      inviteNewUser: 'Inviter un nouveau membre',
+      noTeamMembers: 'Aucun membre d\'équipe',
+      inviteFirstUser: 'Invitez votre premier membre',
+      role: 'Rôle',
+      specialty: 'Spécialité',
+      you: 'Vous',
+      invite: 'Inviter',
+      userInvited: 'Utilisateur invité avec succès',
+      roleUpdated: 'Rôle mis à jour',
+      userRemoved: 'Utilisateur retiré de la clinique',
+      confirmRemove: 'Êtes-vous sûr de vouloir retirer cet utilisateur ?',
+    },
     // Footer
     footer: {
       description: 'La solution professionnelle pour la gestion des ordonnances médicales. Sécurisée, intuitive et conforme aux normes.',
@@ -545,6 +562,23 @@ export const translations = {
       assistant: 'مساعد',
       noPermission: 'ليس لديك صلاحية لهذا الإجراء',
     },
+    // Users Management
+    users: {
+      teamManagement: 'إدارة الفريق',
+      manageTeamDescription: 'إدارة أعضاء فريقك وأدوارهم',
+      inviteUser: 'دعوة مستخدم',
+      inviteNewUser: 'دعوة عضو جديد',
+      noTeamMembers: 'لا يوجد أعضاء فريق',
+      inviteFirstUser: 'ادعُ أول عضو في فريقك',
+      role: 'الدور',
+      specialty: 'التخصص',
+      you: 'أنت',
+      invite: 'دعوة',
+      userInvited: 'تم دعوة المستخدم بنجاح',
+      roleUpdated: 'تم تحديث الدور',
+      userRemoved: 'تم إزالة المستخدم من العيادة',
+      confirmRemove: 'هل أنت متأكد من إزالة هذا المستخدم؟',
+    },
     // Footer
     footer: {
       description: 'الحل الاحترافي لإدارة الوصفات الطبية. آمن وسهل الاستخدام ومتوافق مع المعايير الصحية.',
@@ -829,6 +863,23 @@ export const translations = {
       doctor: 'Doctor',
       assistant: 'Assistant',
       noPermission: 'You do not have permission for this action',
+    },
+    // Users Management
+    users: {
+      teamManagement: 'Team Management',
+      manageTeamDescription: 'Manage your clinic team members and their roles',
+      inviteUser: 'Invite User',
+      inviteNewUser: 'Invite New Team Member',
+      noTeamMembers: 'No team members yet',
+      inviteFirstUser: 'Invite your first team member',
+      role: 'Role',
+      specialty: 'Specialty',
+      you: 'You',
+      invite: 'Invite',
+      userInvited: 'User invited successfully',
+      roleUpdated: 'Role updated',
+      userRemoved: 'User removed from clinic',
+      confirmRemove: 'Are you sure you want to remove this user?',
     },
     // Footer
     footer: {
