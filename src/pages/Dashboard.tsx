@@ -16,6 +16,7 @@ import { WelcomeCard } from '@/components/dashboard/WelcomeCard';
 import { RoleBadge } from '@/components/dashboard/RoleBadge';
 import { ExportReports } from '@/components/dashboard/ExportReports';
 import { NotificationsPanel } from '@/components/dashboard/NotificationsPanel';
+import { UserManagement } from '@/components/users/UserManagement';
 import { usePatients, Patient } from '@/hooks/usePatients';
 import { usePrescriptions } from '@/hooks/usePrescriptions';
 import { useTemplates } from '@/hooks/useTemplates';
@@ -42,10 +43,11 @@ import {
   Building2,
   Activity,
   BarChart3,
-  Star
+  Star,
+  UserCog
 } from 'lucide-react';
 
-type ActiveSection = 'overview' | 'patients' | 'prescriptions' | 'templates' | 'settings' | 'patient-details' | 'statistics' | 'favorites';
+type ActiveSection = 'overview' | 'patients' | 'prescriptions' | 'templates' | 'settings' | 'patient-details' | 'statistics' | 'favorites' | 'team';
 
 const Dashboard: React.FC = () => {
   const { t, dir, language } = useLanguage();
@@ -59,8 +61,10 @@ const Dashboard: React.FC = () => {
   const { prescriptions } = usePrescriptions();
   const { templates } = useTemplates();
   const { profile, tenant } = useProfile();
-  const { canCreatePrescription, canManageTemplates, canViewStatistics } = useUserRole();
-  const { isActive: isSubscriptionActive, canCreatePrescription: subscriptionAllowsPrescription } = useSubscription();
+  const { canCreatePrescription, canManageClinic } = useUserRole();
+  const { canCreatePrescription: subscriptionAllowsPrescription } = useSubscription();
+
+  const usersTranslations = (t as any).users || {};
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -73,7 +77,7 @@ const Dashboard: React.FC = () => {
     };
     checkAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) {
         navigate('/auth');
       } else {
@@ -102,15 +106,22 @@ const Dashboard: React.FC = () => {
     { label: t.dashboard.today, value: todayPrescriptions.toString(), icon: Calendar, color: 'text-success', bgColor: 'bg-success/10' },
   ];
 
-  const menuItems = [
+  const baseMenuItems = [
     { icon: LayoutDashboard, label: t.dashboard.overview, key: 'overview' as ActiveSection },
     { icon: BarChart3, label: t.dashboard.statistics, key: 'statistics' as ActiveSection },
     { icon: Users, label: t.dashboard.patients, key: 'patients' as ActiveSection },
     { icon: FileText, label: t.dashboard.prescriptions, key: 'prescriptions' as ActiveSection },
     { icon: LayoutTemplate, label: t.dashboard.templates, key: 'templates' as ActiveSection },
     { icon: Star, label: t.dashboard.favorites, key: 'favorites' as ActiveSection },
-    { icon: Settings, label: t.dashboard.settings, key: 'settings' as ActiveSection },
   ];
+
+  // Add team management for clinic admins
+  const menuItems = canManageClinic 
+    ? [...baseMenuItems, 
+        { icon: UserCog, label: usersTranslations.teamManagement || 'Team', key: 'team' as ActiveSection },
+        { icon: Settings, label: t.dashboard.settings, key: 'settings' as ActiveSection }
+      ]
+    : [...baseMenuItems, { icon: Settings, label: t.dashboard.settings, key: 'settings' as ActiveSection }];
 
   const CollapseIcon = dir === 'rtl' 
     ? (sidebarCollapsed ? ChevronLeft : ChevronRight)
@@ -482,6 +493,10 @@ const Dashboard: React.FC = () => {
 
           {activeSection === 'favorites' && (
             <FavoriteMedicationsList />
+          )}
+
+          {activeSection === 'team' && canManageClinic && (
+            <UserManagement />
           )}
         </div>
       </main>
