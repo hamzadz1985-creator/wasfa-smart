@@ -8,11 +8,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Prescription } from '@/hooks/usePrescriptions';
-import { Printer, Download, Stethoscope, Building2, Loader2 } from 'lucide-react';
+import { Printer, Download, Stethoscope, Building2, Loader2, Mail, Send } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { supabase } from '@/integrations/supabase/client';
 
 interface PrescriptionPreviewProps {
   open: boolean;
@@ -29,6 +32,9 @@ export const PrescriptionPreview: React.FC<PrescriptionPreviewProps> = ({
   const { profile, tenant } = useProfile();
   const printRef = useRef<HTMLDivElement>(null);
   const [exporting, setExporting] = useState(false);
+  const [showEmailDialog, setShowEmailDialog] = useState(false);
+  const [recipientEmail, setRecipientEmail] = useState('');
+  const [sendingEmail, setSendingEmail] = useState(false);
 
   const formatDate = (dateStr: string) => {
     const locale = language === 'ar' ? 'ar-SA' : language === 'fr' ? 'fr-FR' : 'en-US';
@@ -209,13 +215,63 @@ export const PrescriptionPreview: React.FC<PrescriptionPreviewProps> = ({
     }
   };
 
+  const handleSendEmail = async () => {
+    if (!recipientEmail || !prescription.patient) return;
+    
+    setSendingEmail(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('send-prescription-email', {
+        body: {
+          recipientEmail,
+          patientName: prescription.patient.full_name,
+          doctorName: profile?.full_name || '',
+          clinicName: tenant?.name || '',
+          prescriptionDate: formatDate(prescription.created_at),
+          medications: prescription.medications || [],
+          language,
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: t.common.success,
+        description: language === 'ar' ? 'تم إرسال الوصفة بنجاح' : language === 'fr' ? 'Ordonnance envoyée avec succès' : 'Prescription sent successfully',
+      });
+
+      setShowEmailDialog(false);
+      setRecipientEmail('');
+    } catch (error) {
+      console.error('Error sending email:', error);
+      toast({
+        title: t.common.error,
+        description: language === 'ar' ? 'حدث خطأ أثناء الإرسال' : language === 'fr' ? 'Erreur lors de l\'envoi' : 'Error sending email',
+        variant: 'destructive',
+      });
+    } finally {
+      setSendingEmail(false);
+    }
+  };
+
+  const emailLabels = {
+    ar: { title: 'إرسال الوصفة بالبريد', email: 'البريد الإلكتروني', send: 'إرسال' },
+    fr: { title: 'Envoyer l\'ordonnance par email', email: 'Email', send: 'Envoyer' },
+    en: { title: 'Send Prescription via Email', email: 'Email', send: 'Send' },
+  };
+  const emailT = emailLabels[language as keyof typeof emailLabels] || emailLabels.en;
+
   return (
+    <>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto" dir={dir}>
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             <span>{language === 'ar' ? 'معاينة الوصفة' : language === 'fr' ? 'Aperçu de l\'ordonnance' : 'Prescription Preview'}</span>
             <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => setShowEmailDialog(true)}>
+                <Mail className="h-4 w-4 me-1" />
+                {language === 'ar' ? 'إرسال' : language === 'fr' ? 'Envoyer' : 'Send'}
+              </Button>
               <Button variant="outline" size="sm" onClick={handleExportPDF} disabled={exporting}>
                 {exporting ? (
                   <Loader2 className="h-4 w-4 me-1 animate-spin" />
@@ -347,5 +403,51 @@ export const PrescriptionPreview: React.FC<PrescriptionPreviewProps> = ({
         </div>
       </DialogContent>
     </Dialog>
+
+    {/* Email Dialog */}
+    <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
+      <DialogContent dir={dir}>
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Mail className="h-5 w-5" />
+            {emailT.title}
+          </DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          <div className="space-y-2">
+            <Label htmlFor="recipientEmail">{emailT.email}</Label>
+            <Input
+              id="recipientEmail"
+              type="email"
+              value={recipientEmail}
+              onChange={(e) => setRecipientEmail(e.target.value)}
+              placeholder={language === 'ar' ? 'example@email.com' : 'patient@example.com'}
+            />
+          </div>
+          <div className="flex gap-3 pt-2">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => setShowEmailDialog(false)}
+            >
+              {t.common.cancel}
+            </Button>
+            <Button
+              className="flex-1"
+              onClick={handleSendEmail}
+              disabled={!recipientEmail || sendingEmail}
+            >
+              {sendingEmail ? (
+                <Loader2 className="h-4 w-4 me-2 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4 me-2" />
+              )}
+              {emailT.send}
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 };

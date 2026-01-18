@@ -228,6 +228,10 @@ export const translations = {
       duplicate: 'Dupliquer',
       delete: 'Supprimer',
       created: 'Ordonnance créée avec succès',
+      sendEmail: 'Envoyer par email',
+      emailSent: 'Ordonnance envoyée avec succès',
+      emailError: 'Erreur lors de l\'envoi',
+      enterEmail: 'Entrez l\'email du destinataire',
     },
     // Settings
     settings: {
@@ -549,6 +553,10 @@ export const translations = {
       duplicate: 'نسخ',
       delete: 'حذف',
       created: 'تم إنشاء الوصفة بنجاح',
+      sendEmail: 'إرسال بالبريد',
+      emailSent: 'تم إرسال الوصفة بنجاح',
+      emailError: 'حدث خطأ أثناء الإرسال',
+      enterEmail: 'أدخل البريد الإلكتروني',
     },
     // Settings
     settings: {
@@ -870,6 +878,10 @@ export const translations = {
       duplicate: 'Duplicate',
       delete: 'Delete',
       created: 'Prescription created successfully',
+      sendEmail: 'Send via email',
+      emailSent: 'Prescription sent successfully',
+      emailError: 'Error sending prescription',
+      enterEmail: 'Enter recipient email',
     },
     // Settings
     settings: {

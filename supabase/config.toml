@@ -1,1 +1,4 @@
 project_id = "onythlfcgwifpoehmsjk"
+
+[functions.send-prescription-email]
+verify_jwt = false
