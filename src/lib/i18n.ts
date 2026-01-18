@@ -277,6 +277,25 @@ export const translations = {
       userRemoved: 'Utilisateur retiré de la clinique',
       confirmRemove: 'Êtes-vous sûr de vouloir retirer cet utilisateur ?',
     },
+    // Audit Logs
+    audit: {
+      title: 'Journal d\'activité',
+      description: 'Suivez toutes les opérations dans votre clinique',
+      searchPlaceholder: 'Rechercher par utilisateur ou entité...',
+      filterByAction: 'Filtrer par action',
+      filterByEntity: 'Filtrer par entité',
+      allActions: 'Toutes les actions',
+      allEntities: 'Toutes les entités',
+      date: 'Date',
+      user: 'Utilisateur',
+      action: 'Action',
+      entityType: 'Type d\'entité',
+      entityName: 'Nom de l\'entité',
+      noLogs: 'Aucun journal d\'activité trouvé',
+      exportCSV: 'Exporter CSV',
+      showing: 'Affichage',
+      of: 'sur',
+    },
     // Footer
     footer: {
       description: 'La solution professionnelle pour la gestion des ordonnances médicales. Sécurisée, intuitive et conforme aux normes.',
@@ -579,6 +598,25 @@ export const translations = {
       userRemoved: 'تم إزالة المستخدم من العيادة',
       confirmRemove: 'هل أنت متأكد من إزالة هذا المستخدم؟',
     },
+    // Audit Logs
+    audit: {
+      title: 'سجل النشاطات',
+      description: 'تتبع جميع العمليات في عيادتك',
+      searchPlaceholder: 'البحث بالمستخدم أو الكيان...',
+      filterByAction: 'تصفية حسب العملية',
+      filterByEntity: 'تصفية حسب النوع',
+      allActions: 'جميع العمليات',
+      allEntities: 'جميع الأنواع',
+      date: 'التاريخ',
+      user: 'المستخدم',
+      action: 'العملية',
+      entityType: 'نوع الكيان',
+      entityName: 'اسم الكيان',
+      noLogs: 'لا توجد سجلات نشاط',
+      exportCSV: 'تصدير CSV',
+      showing: 'عرض',
+      of: 'من',
+    },
     // Footer
     footer: {
       description: 'الحل الاحترافي لإدارة الوصفات الطبية. آمن وسهل الاستخدام ومتوافق مع المعايير الصحية.',
@@ -880,6 +918,25 @@ export const translations = {
       roleUpdated: 'Role updated',
       userRemoved: 'User removed from clinic',
       confirmRemove: 'Are you sure you want to remove this user?',
+    },
+    // Audit Logs
+    audit: {
+      title: 'Activity Log',
+      description: 'Track all operations in your clinic',
+      searchPlaceholder: 'Search by user or entity...',
+      filterByAction: 'Filter by action',
+      filterByEntity: 'Filter by entity',
+      allActions: 'All Actions',
+      allEntities: 'All Entities',
+      date: 'Date',
+      user: 'User',
+      action: 'Action',
+      entityType: 'Entity Type',
+      entityName: 'Entity Name',
+      noLogs: 'No activity logs found',
+      exportCSV: 'Export CSV',
+      showing: 'Showing',
+      of: 'of',
     },
     // Footer
     footer: {
