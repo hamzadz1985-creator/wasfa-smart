@@ -17,6 +17,7 @@ import { RoleBadge } from '@/components/dashboard/RoleBadge';
 import { ExportReports } from '@/components/dashboard/ExportReports';
 import { NotificationsPanel } from '@/components/dashboard/NotificationsPanel';
 import { UserManagement } from '@/components/users/UserManagement';
+import { AuditLogsPanel } from '@/components/dashboard/AuditLogsPanel';
 import { usePatients, Patient } from '@/hooks/usePatients';
 import { usePrescriptions } from '@/hooks/usePrescriptions';
 import { useTemplates } from '@/hooks/useTemplates';
@@ -44,10 +45,11 @@ import {
   Activity,
   BarChart3,
   Star,
-  UserCog
+  UserCog,
+  History
 } from 'lucide-react';
 
-type ActiveSection = 'overview' | 'patients' | 'prescriptions' | 'templates' | 'settings' | 'patient-details' | 'statistics' | 'favorites' | 'team';
+type ActiveSection = 'overview' | 'patients' | 'prescriptions' | 'templates' | 'settings' | 'patient-details' | 'statistics' | 'favorites' | 'team' | 'audit';
 
 const Dashboard: React.FC = () => {
   const { t, dir, language } = useLanguage();
@@ -65,6 +67,7 @@ const Dashboard: React.FC = () => {
   const { canCreatePrescription: subscriptionAllowsPrescription } = useSubscription();
 
   const usersTranslations = (t as any).users || {};
+  const auditTranslations = (t as any).audit || {};
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -115,10 +118,11 @@ const Dashboard: React.FC = () => {
     { icon: Star, label: t.dashboard.favorites, key: 'favorites' as ActiveSection },
   ];
 
-  // Add team management for clinic admins
+  // Add team management and audit logs for clinic admins
   const menuItems = canManageClinic 
     ? [...baseMenuItems, 
         { icon: UserCog, label: usersTranslations.teamManagement || 'Team', key: 'team' as ActiveSection },
+        { icon: History, label: auditTranslations.title || 'Activity Log', key: 'audit' as ActiveSection },
         { icon: Settings, label: t.dashboard.settings, key: 'settings' as ActiveSection }
       ]
     : [...baseMenuItems, { icon: Settings, label: t.dashboard.settings, key: 'settings' as ActiveSection }];
@@ -497,6 +501,10 @@ const Dashboard: React.FC = () => {
 
           {activeSection === 'team' && canManageClinic && (
             <UserManagement />
+          )}
+
+          {activeSection === 'audit' && canManageClinic && (
+            <AuditLogsPanel />
           )}
         </div>
       </main>
