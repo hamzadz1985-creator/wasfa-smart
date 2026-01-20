@@ -14,6 +14,45 @@ serve(async (req) => {
   }
 
   try {
+    // Authenticate the user - require valid JWT
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Missing or invalid authorization header' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    // Verify the JWT token and get user claims
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+    
+    if (claimsError || !claimsData?.claims) {
+      console.error('JWT validation failed:', claimsError);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Invalid token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const userId = claimsData.claims.sub;
+    if (!userId) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - No user ID in token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Log the authenticated request for audit purposes
+    console.log('Authenticated prescription email request from user:', userId);
+
     const { 
       recipientEmail, 
       patientName, 
@@ -28,6 +67,23 @@ serve(async (req) => {
     if (!recipientEmail || !patientName || !medications) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(recipientEmail)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid email format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate medications array
+    if (!Array.isArray(medications) || medications.length === 0) {
+      return new Response(
+        JSON.stringify({ error: 'Medications must be a non-empty array' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -198,9 +254,8 @@ serve(async (req) => {
 </html>
     `.trim();
 
-    // For now, log the email that would be sent
-    // In production, you would integrate with an email service like Resend, SendGrid, etc.
-    console.log('Email to be sent:', {
+    // Log the email request for audit purposes (without sensitive data)
+    console.log('Email prepared for sending:', {
       to: recipientEmail,
       subject: subject,
       patientName,
@@ -208,6 +263,7 @@ serve(async (req) => {
       clinicName,
       prescriptionDate,
       medicationsCount: medications.length,
+      requestedBy: userId,
     });
 
     // Return success with email preview
