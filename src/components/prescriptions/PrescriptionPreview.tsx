@@ -29,7 +29,7 @@ export const PrescriptionPreview: React.FC<PrescriptionPreviewProps> = ({
   prescription,
 }) => {
   const { t, dir, language } = useLanguage();
-  const { profile, tenant } = useProfile();
+  const { profile, tenant, signedSignatureUrl, signedLogoUrl } = useProfile();
   const printRef = useRef<HTMLDivElement>(null);
   const [exporting, setExporting] = useState(false);
   const [showEmailDialog, setShowEmailDialog] = useState(false);
@@ -292,10 +292,10 @@ export const PrescriptionPreview: React.FC<PrescriptionPreviewProps> = ({
           {/* Header */}
           <div className="prescription-header text-center border-b-2 border-teal-600 pb-4 mb-6">
             {/* Clinic Logo */}
-            {tenant?.logo_url && (
+            {signedLogoUrl && (
               <div className="mb-3">
                 <img 
-                  src={tenant.logo_url} 
+                  src={signedLogoUrl} 
                   alt="Clinic Logo" 
                   className="h-16 mx-auto object-contain"
                   crossOrigin="anonymous"
@@ -303,7 +303,7 @@ export const PrescriptionPreview: React.FC<PrescriptionPreviewProps> = ({
               </div>
             )}
             <div className="flex items-center justify-center gap-3 mb-2">
-              {!tenant?.logo_url && <Stethoscope className="h-8 w-8 text-teal-600" />}
+              {!signedLogoUrl && <Stethoscope className="h-8 w-8 text-teal-600" />}
               <div className="doctor-name text-2xl font-bold text-teal-600">
                 {language === 'ar' ? 'د.' : 'Dr.'} {profile?.full_name || ''}
               </div>
@@ -384,9 +384,9 @@ export const PrescriptionPreview: React.FC<PrescriptionPreviewProps> = ({
             <div className="text-sm text-gray-600 mb-8">
               {language === 'ar' ? 'التوقيع والختم' : language === 'fr' ? 'Signature et cachet' : 'Signature and stamp'}
             </div>
-            {profile?.signature_url && (
+            {signedSignatureUrl && (
               <img 
-                src={profile.signature_url} 
+                src={signedSignatureUrl} 
                 alt="Signature" 
                 className="h-16 object-contain"
                 crossOrigin="anonymous"

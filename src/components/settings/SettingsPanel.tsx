@@ -11,7 +11,7 @@ import { Loader2, Save, Stethoscope, Building2, Upload, Image, PenTool, X } from
 
 export const SettingsPanel: React.FC = () => {
   const { t } = useLanguage();
-  const { profile, tenant, loading, updateProfile, updateTenant, refetch } = useProfile();
+  const { profile, tenant, loading, updateProfile, updateTenant, refetch, signedSignatureUrl, signedLogoUrl } = useProfile();
   const [saving, setSaving] = useState(false);
   const [uploadingSignature, setUploadingSignature] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
@@ -62,8 +62,18 @@ export const SettingsPanel: React.FC = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
+      // Get user's tenant_id for proper folder structure
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('tenant_id')
+        .eq('id', user.id)
+        .single();
+      
+      if (!profileData?.tenant_id) throw new Error('No tenant found');
+
       const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}/${folder}/${Date.now()}.${fileExt}`;
+      // Store files under tenant folder for proper RLS access
+      const fileName = `${profileData.tenant_id}/${folder}/${Date.now()}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
         .from('clinic-assets')
@@ -71,11 +81,9 @@ export const SettingsPanel: React.FC = () => {
 
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('clinic-assets')
-        .getPublicUrl(fileName);
-
-      return publicUrl;
+      // Store just the file path in the database, not a public URL
+      // The signed URL will be generated when displaying
+      return fileName;
     } catch (error: any) {
       toast({ title: t.common.error, description: error.message, variant: 'destructive' });
       return null;
@@ -186,10 +194,10 @@ export const SettingsPanel: React.FC = () => {
               التوقيع الرقمي
             </Label>
             <div className="border-2 border-dashed border-border rounded-xl p-4 text-center relative group">
-              {profile?.signature_url ? (
+              {profile?.signature_url && signedSignatureUrl ? (
                 <div className="relative">
                   <img 
-                    src={profile.signature_url} 
+                    src={signedSignatureUrl} 
                     alt="Signature" 
                     className="max-h-32 mx-auto object-contain"
                   />
@@ -286,10 +294,10 @@ export const SettingsPanel: React.FC = () => {
               شعار العيادة
             </Label>
             <div className="border-2 border-dashed border-border rounded-xl p-4 text-center relative group">
-              {tenant?.logo_url ? (
+              {tenant?.logo_url && signedLogoUrl ? (
                 <div className="relative">
                   <img 
-                    src={tenant.logo_url} 
+                    src={signedLogoUrl} 
                     alt="Clinic Logo" 
                     className="max-h-32 mx-auto object-contain"
                   />
